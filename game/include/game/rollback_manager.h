@@ -60,7 +60,7 @@ public:
      */
     void ConfirmFrame(Frame newValidatedFrame, const std::array<PhysicsState, maxPlayerNmb>& serverPhysicsState);
     [[nodiscard]] PhysicsState GetValidatePhysicsState(PlayerNumber playerNumber) const;
-    [[nodiscard]] Frame GetLastValidateFrame() const { return lastValidateFrame_; }
+    [[nodiscard]] Frame GetLastValidateFrame() const { return lastValidatedFrame_; }
     [[nodiscard]] Frame GetLastReceivedFrame(PlayerNumber playerNumber) const { return lastReceivedFrame_[playerNumber]; }
     [[nodiscard]] Frame GetCurrentFrame() const { return currentFrame_; }
     [[nodiscard]] const core::TransformManager& GetTransformManager() const { return currentTransformManager_; }
@@ -103,7 +103,7 @@ private:
     /**
      * \brief lastValidateFrame_ is the last validated frame from the server side.
      */
-    Frame lastValidateFrame_ = 0;
+    Frame lastValidatedFrame_ = 0;
     /**
      * \brief currentFrame_ is the current frame on the client side.
      */

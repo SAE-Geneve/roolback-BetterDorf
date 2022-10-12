@@ -56,9 +56,9 @@
  * \subsection physics_manager Physics Manager
  * The game::PhysicsManager is a class that contains two core::ComponentManager:
  * - game::BodyManager owns the game::Body (or rigid bodies) of the physics engine.
- * - game::BoxManager owns the game::Box (or box colliders) of the physics engine.
+ * - game::colManager owns the game::col (or col colliders) of the physics engine.
  * 
- * The Physics Engine is a REALLY simple implementation of basic box triggering. 
+ * The Physics Engine is a REALLY simple implementation of basic col triggering. 
  * 
  * When a trigger occurs, the game::PhysicsManager will call the OnTrigger method all its game::OnTriggerInterface. To register a game::OnTriggerInterface, you have to give it to the RegisterTriggerListener method.
  * \subsection transform_manager Transform Manager

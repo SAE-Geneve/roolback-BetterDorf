@@ -180,7 +180,7 @@ void RollbackManager::ValidateFrame(Frame newValidateFrame)
     currentPlayerManager_.CopyAllComponents(lastValidatePlayerManager_.GetAllComponents());
 
     //We simulate the frames until the new validated frame
-    for (Frame frame = lastValidateFrame_ + 1; frame <= newValidateFrame; frame++)
+    for (Frame frame = lastValidatedFrame_ + 1; frame <= newValidateFrame; frame++)
     {
         testedFrame_ = frame;
         //Copy the players inputs into the player manager
@@ -209,16 +209,16 @@ void RollbackManager::ValidateFrame(Frame newValidateFrame)
     lastValidateBulletManager_.CopyAllComponents(currentBulletManager_.GetAllComponents());
     lastValidatePlayerManager_.CopyAllComponents(currentPlayerManager_.GetAllComponents());
     lastValidatePhysicsManager_.CopyAllComponents(currentPhysicsManager_);
-    lastValidateFrame_ = newValidateFrame;
+    lastValidatedFrame_ = newValidateFrame;
     createdEntities_.clear();
 }
-void RollbackManager::ConfirmFrame(Frame newValidateFrame, const std::array<PhysicsState, maxPlayerNmb>& serverPhysicsState)
+void RollbackManager::ConfirmFrame(Frame newValidatedFrame, const std::array<PhysicsState, maxPlayerNmb>& serverPhysicsState)
 {
 
 #ifdef TRACY_ENABLE
     ZoneScoped;
 #endif
-    ValidateFrame(newValidateFrame);
+    ValidateFrame(newValidatedFrame);
     for (PlayerNumber playerNumber = 0; playerNumber < maxPlayerNmb; playerNumber++)
     {
         const PhysicsState lastPhysicsState = GetValidatePhysicsState(playerNumber);
@@ -226,8 +226,8 @@ void RollbackManager::ConfirmFrame(Frame newValidateFrame, const std::array<Phys
         {
             gpr_assert(false, fmt::format("Physics State are not equal for player {} (server frame: {}, client frame: {}, server: {}, client: {})", 
                 playerNumber+1, 
-                newValidateFrame, 
-                lastValidateFrame_, 
+                newValidatedFrame, 
+                lastValidatedFrame_, 
                 serverPhysicsState[playerNumber], 
                 lastPhysicsState));
         }
@@ -280,8 +280,8 @@ void RollbackManager::SpawnPlayer(PlayerNumber playerNumber, core::Entity entity
     Body playerBody;
     playerBody.position = position;
     playerBody.rotation = rotation;
-    Box playerBox;
-    playerBox.extends = core::Vec2f::one() * 0.25f;
+    Circle playerCol;
+    playerCol.radius = 0.25f;
 
     PlayerCharacter playerCharacter;
     playerCharacter.playerNumber = playerNumber;
@@ -291,16 +291,16 @@ void RollbackManager::SpawnPlayer(PlayerNumber playerNumber, core::Entity entity
 
     currentPhysicsManager_.AddBody(entity);
     currentPhysicsManager_.SetBody(entity, playerBody);
-    currentPhysicsManager_.AddBox(entity);
-    currentPhysicsManager_.SetBox(entity, playerBox);
+    currentPhysicsManager_.AddCol(entity);
+    currentPhysicsManager_.SetCol(entity, playerCol);
 
     lastValidatePlayerManager_.AddComponent(entity);
     lastValidatePlayerManager_.SetComponent(entity, playerCharacter);
 
     lastValidatePhysicsManager_.AddBody(entity);
     lastValidatePhysicsManager_.SetBody(entity, playerBody);
-    lastValidatePhysicsManager_.AddBox(entity);
-    lastValidatePhysicsManager_.SetBox(entity, playerBox);
+    lastValidatePhysicsManager_.AddCol(entity);
+    lastValidatePhysicsManager_.SetCol(entity, playerCol);
 
     currentTransformManager_.AddComponent(entity);
     currentTransformManager_.SetPosition(entity, position);
@@ -357,16 +357,16 @@ void RollbackManager::SpawnBullet(PlayerNumber playerNumber, core::Entity entity
     Body bulletBody;
     bulletBody.position = position;
     bulletBody.velocity = velocity;
-    Box bulletBox;
-    bulletBox.extends = core::Vec2f::one() * bulletScale * 0.5f;
+    Circle bulletCol;
+    bulletCol.radius = bulletScale * 0.5f;
 
     currentBulletManager_.AddComponent(entity);
     currentBulletManager_.SetComponent(entity, { bulletPeriod, playerNumber });
 
     currentPhysicsManager_.AddBody(entity);
     currentPhysicsManager_.SetBody(entity, bulletBody);
-    currentPhysicsManager_.AddBox(entity);
-    currentPhysicsManager_.SetBox(entity, bulletBox);
+    currentPhysicsManager_.AddCol(entity);
+    currentPhysicsManager_.SetCol(entity, bulletCol);
 
     currentTransformManager_.AddComponent(entity);
     currentTransformManager_.SetPosition(entity, position);

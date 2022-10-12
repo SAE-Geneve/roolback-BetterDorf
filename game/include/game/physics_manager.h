@@ -28,6 +28,7 @@ enum class BodyType
  */
 struct Body
 {
+    float mass = 1.0f;
     core::Vec2f position = core::Vec2f::zero();
     core::Vec2f velocity = core::Vec2f::zero();
     core::Degree angularVelocity = core::Degree(0.0f);
@@ -36,16 +37,16 @@ struct Body
 };
 
 /**
- * \brief Box is a class that represents an axis-aligned box collider
+ * \brief col is a class that represents an axis-aligned col collider
  */
-struct Box
+struct Circle
 {
-    core::Vec2f extends = core::Vec2f::one();
+    float radius = 0.0f;
     bool isTrigger = false;
 };
 
 /**
- * \brief OnTriggerInterface is an interface for classes that needs to be called when two boxes are in contact.
+ * \brief OnTriggerInterface is an interface for classes that needs to be called when two coles are in contact.
  * It needs to be registered in the PhysicsManager.
  */
 class OnTriggerInterface
@@ -65,16 +66,16 @@ public:
 };
 
 /**
- * \brief BoxManager is a ComponentManager that holds all the Box in the world.
+ * \brief colManager is a ComponentManager that holds all the col in the world.
  */
-class BoxManager : public core::ComponentManager<Box, static_cast<core::EntityMask>(core::ComponentType::BOX_COLLIDER2D)>
+class CircleManager : public core::ComponentManager<Circle, static_cast<core::EntityMask>(core::ComponentType::CIRCLE_COLLIDER2D)>
 {
 public:
     using ComponentManager::ComponentManager;
 };
 
 /**
- * \brief PhysicsManager is a class that holds both BodyManager and BoxManager and manages the physics fixed update.
+ * \brief PhysicsManager is a class that holds both BodyManager and colManager and manages the physics fixed update.
  * It allows to register OnTriggerInterface to be called when a trigger occcurs.
  */
 class PhysicsManager : public core::DrawInterface
@@ -86,9 +87,9 @@ public:
     void SetBody(core::Entity entity, const Body& body);
     void AddBody(core::Entity entity);
 
-    void AddBox(core::Entity entity);
-    void SetBox(core::Entity entity, const Box& box);
-    [[nodiscard]] const Box& GetBox(core::Entity entity) const;
+    void AddCol(core::Entity entity);
+    void SetCol(core::Entity entity, const Circle& col);
+    [[nodiscard]] const Circle& Getcol(core::Entity entity) const;
     /**
      * \brief RegisterTriggerListener is a method that stores an OnTriggerInterface in the PhysicsManager that will call the OnTrigger method in case of a trigger.
      * \param onTriggerInterface is the OnTriggerInterface to be called when a trigger occurs.
@@ -101,7 +102,7 @@ public:
 private:
     core::EntityManager& entityManager_;
     BodyManager bodyManager_;
-    BoxManager boxManager_;
+    CircleManager colManager_;
     core::Action<core::Entity, core::Entity> onTriggerAction_;
     //Used for debug
     sf::Vector2f center_{};
