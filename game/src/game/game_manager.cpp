@@ -66,23 +66,6 @@ void GameManager::Validate(Frame newValidateFrame)
     rollbackManager_.ValidateFrame(newValidateFrame);
 }
 
-core::Entity GameManager::SpawnBullet(PlayerNumber playerNumber, core::Vec2f position, core::Vec2f velocity)
-{
-    const core::Entity entity = entityManager_.CreateEntity();
-
-    transformManager_.AddComponent(entity);
-    transformManager_.SetPosition(entity, position);
-    transformManager_.SetScale(entity, core::Vec2f::one() * bulletScale);
-    transformManager_.SetRotation(entity, core::Degree(0.0f));
-    rollbackManager_.SpawnBullet(playerNumber, entity, position, velocity);
-    return entity;
-}
-
-void GameManager::DestroyBullet(core::Entity entity)
-{
-    rollbackManager_.DestroyEntity(entity);
-}
-
 PlayerNumber GameManager::CheckWinner() const
 {
     int alivePlayer = 0;
@@ -121,10 +104,6 @@ void ClientGameManager::Begin()
     ZoneScoped;
 #endif
     //load textures
-    if (!bulletTexture_.loadFromFile("data/sprites/bullet.png"))
-    {
-        core::LogError("Could not load bullet sprite");
-    }
     if (!shipTexture_.loadFromFile("data/sprites/ship.png"))
     {
         core::LogError("Could not load ship sprite");
@@ -326,19 +305,6 @@ void ClientGameManager::SpawnPlayer(PlayerNumber playerNumber, core::Vec2f posit
     spriteManager_.SetColor(entity, playerColors[playerNumber]);
 
 }
-
-core::Entity ClientGameManager::SpawnBullet(PlayerNumber playerNumber, core::Vec2f position, core::Vec2f velocity)
-{
-    const auto entity = GameManager::SpawnBullet(playerNumber, position, velocity);
-
-    spriteManager_.AddComponent(entity);
-    spriteManager_.SetTexture(entity, bulletTexture_);
-    spriteManager_.SetOrigin(entity, sf::Vector2f(bulletTexture_.getSize()) / 2.0f);
-    spriteManager_.SetColor(entity, playerColors[playerNumber]);
-
-    return entity;
-}
-
 
 void ClientGameManager::FixedUpdate()
 {

@@ -6,23 +6,22 @@
 namespace game
 {
 /**
- * \brief Bullet is a struct that contains info about a player bullet (when it will be destroyed and whose player it is).
+ * \brief A glove is a struct that keeps track of the player's punching glovesl. It handles states such as punching.
  */
 struct Glove
 {
     float punchingTime = 0.0f;
     bool isPunching = false;
-
+    bool isRightGlove = true;
     PlayerNumber playerNumber = INVALID_PLAYER;
 };
 
 class GameManager;
 
 /**
- * \brief BulletManager is a ComponentManager that holds all the Bullet in one place.
- * It will automatically destroy the Bullet when remainingTime is over.
+ * \brief GloveManager is a ComponentManager that holds all the gloves and handles their behaviour
  */
-class GloveManager : public core::ComponentManager<Glove, static_cast<core::EntityMask>(ComponentType::BULLET)>
+class GloveManager : public core::ComponentManager<Glove, static_cast<core::EntityMask>(ComponentType::GLOVE)>
 {
 public:
     explicit GloveManager(core::EntityManager& entityManager, GameManager& gameManager);

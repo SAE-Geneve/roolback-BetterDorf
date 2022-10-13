@@ -37,18 +37,29 @@ constexpr std::uint32_t maxPlayerNmb = 2;
 constexpr short playerHealth = 5;
 constexpr float playerSpeed = 1.0f;
 constexpr core::Degree playerAngularSpeed = core::Degree(90.0f);
-constexpr float playerShootingPeriod = 0.3f;
-constexpr float bulletSpeed = 2.0f;
-constexpr float bulletScale = 0.1f;
-constexpr float bulletPeriod = 3.0f;
 constexpr float playerInvincibilityPeriod = 1.5f;
 constexpr float invincibilityFlashPeriod = 0.5f;
 
+constexpr float gloveMinDist = 0.7f;
+constexpr float gloveMaxDist = 1.2f;
+constexpr float gloveIdealDist = 1.0f;
+/**
+ * \brief Starting angle for the section where the glove is allowed to be in
+ */
+constexpr core::Radian gloveAngle1 = 20.0f;
+/**
+* \brief Ending angle for the section where the glove is allowed to be in
+*/
+constexpr core::Radian gloveAngle2 = 95.0f;
+constexpr core::Radian gloveIdealAngle = 30.0f;
+
+constexpr float punchingTime = 0.4f;
+constexpr float punchingSpeed = 10.0f;
+constexpr float gloveHoverForce = 2.0f;
 /**
  * \brief windowBufferSize is the size of input stored by a client. 5 seconds of frame at 50 fps
  */
 constexpr std::size_t windowBufferSize = 5u * 50u;
-
 /**
  * \brief startDelay is the delay to wait before starting a game in milliseconds
  */
@@ -90,10 +101,9 @@ constexpr std::array<core::Degree, std::max(4u, maxPlayerNmb)> spawnRotations
 enum class ComponentType : core::EntityMask
 {
     PLAYER_CHARACTER = static_cast<core::EntityMask>(core::ComponentType::OTHER_TYPE),
-    BULLET = static_cast<core::EntityMask>(core::ComponentType::OTHER_TYPE) << 1u,
-    GLOVE = static_cast<core::EntityMask>(core::ComponentType::OTHER_TYPE) << 2u,
-    PLAYER_INPUT = static_cast<core::EntityMask>(core::ComponentType::OTHER_TYPE) << 3u,
-    DESTROYED = static_cast<core::EntityMask>(core::ComponentType::OTHER_TYPE) << 4u,
+    GLOVE = static_cast<core::EntityMask>(core::ComponentType::OTHER_TYPE) << 1u,
+    PLAYER_INPUT = static_cast<core::EntityMask>(core::ComponentType::OTHER_TYPE) << 2u,
+    DESTROYED = static_cast<core::EntityMask>(core::ComponentType::OTHER_TYPE) << 3u,
 };
 
 /**

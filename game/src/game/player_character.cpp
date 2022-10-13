@@ -55,29 +55,6 @@ void PlayerCharacterManager::FixedUpdate(sf::Time dt)
             playerCharacter.invincibilityTime -= dt.asSeconds();
             SetComponent(playerEntity, playerCharacter);
         }
-        //Check if playerCharacter cannot shoot, and increase shootingTime
-        if (playerCharacter.shootingTime < playerShootingPeriod)
-        {
-            playerCharacter.shootingTime += dt.asSeconds();
-            SetComponent(playerEntity, playerCharacter);
-        }
-        //Shooting mechanism
-        if (playerCharacter.shootingTime >= playerShootingPeriod)
-        {
-            if (input & PlayerInputEnum::PlayerInput::SHOOT)
-            {
-                const auto currentPlayerSpeed = playerBody.velocity.GetMagnitude();
-                const auto bulletVelocity = dir *
-                    ((core::Vec2f::Dot(playerBody.velocity, dir) > 0.0f ? currentPlayerSpeed : 0.0f)
-                        + bulletSpeed);
-                const auto bulletPosition = playerBody.position + dir * 0.5f + playerBody.velocity * dt.asSeconds();
-                gameManager_.SpawnBullet(playerCharacter.playerNumber,
-                    bulletPosition,
-                    bulletVelocity);
-                playerCharacter.shootingTime = 0.0f;
-                SetComponent(playerEntity, playerCharacter);
-            }
-        }
     }
 }
 }
