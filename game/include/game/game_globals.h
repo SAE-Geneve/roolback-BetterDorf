@@ -92,7 +92,7 @@ enum class ComponentType : core::EntityMask
 {
     PLAYER_CHARACTER = static_cast<core::EntityMask>(core::ComponentType::OTHER_TYPE),
     BULLET = static_cast<core::EntityMask>(core::ComponentType::OTHER_TYPE) << 1u,
-    ASTEROID = static_cast<core::EntityMask>(core::ComponentType::OTHER_TYPE) << 2u,
+    GLOVE = static_cast<core::EntityMask>(core::ComponentType::OTHER_TYPE) << 2u,
     PLAYER_INPUT = static_cast<core::EntityMask>(core::ComponentType::OTHER_TYPE) << 3u,
     DESTROYED = static_cast<core::EntityMask>(core::ComponentType::OTHER_TYPE) << 4u,
 };
@@ -112,6 +112,7 @@ enum PlayerInput : std::uint8_t
     LEFT = 1u << 2u,
     RIGHT = 1u << 3u,
     SHOOT = 1u << 4u,
+    SHOOT2 = 1u << 5u
 };
 }
 }

@@ -135,7 +135,6 @@ void ClientGameManager::Begin()
         core::LogError("Could not load font");
     }
     textRenderer_.setFont(font_);
-    starBackground_.Init();
 }
 
 void ClientGameManager::Update(sf::Time dt)
@@ -221,7 +220,6 @@ void ClientGameManager::Draw(sf::RenderTarget& target)
     UpdateCameraView();
     target.setView(cameraView_);
 
-    starBackground_.Draw(target);
     spriteManager_.Draw(target);
 
     if(drawPhysics_)
