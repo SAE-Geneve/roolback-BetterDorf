@@ -94,14 +94,14 @@ private:
     PlayerCharacterManager currentPlayerManager_;
     BulletManager currentBulletManager_;
     /**
-     * Last Validate (confirm frame) Component Managers used for rollback
+     * Last Validated (confirm frame) Component Managers used for rollback
      */
-    PhysicsManager lastValidatePhysicsManager_;
-    PlayerCharacterManager lastValidatePlayerManager_;
-    BulletManager lastValidateBulletManager_;
+    PhysicsManager lastValidatedPhysicsManager_;
+    PlayerCharacterManager lastValidatedPlayerManager_;
+    BulletManager lastValidatedBulletManager_;
 
     /**
-     * \brief lastValidateFrame_ is the last validated frame from the server side.
+     * \brief lastValidatedFrame_ is the last validated frame from the server side.
      */
     Frame lastValidatedFrame_ = 0;
     /**

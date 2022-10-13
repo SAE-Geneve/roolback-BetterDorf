@@ -16,8 +16,8 @@ RollbackManager::RollbackManager(GameManager& gameManager, core::EntityManager& 
     currentTransformManager_(entityManager),
     currentPhysicsManager_(entityManager), currentPlayerManager_(entityManager, currentPhysicsManager_, gameManager_),
     currentBulletManager_(entityManager, gameManager),
-    lastValidatePhysicsManager_(entityManager),
-    lastValidatePlayerManager_(entityManager, lastValidatePhysicsManager_, gameManager_), lastValidateBulletManager_(entityManager, gameManager)
+    lastValidatedPhysicsManager_(entityManager),
+    lastValidatedPlayerManager_(entityManager, lastValidatedPhysicsManager_, gameManager_), lastValidatedBulletManager_(entityManager, gameManager)
 {
     for (auto& input : inputs_)
     {
@@ -53,9 +53,9 @@ void RollbackManager::SimulateToCurrentFrame()
     }
 
     //Revert the current game state to the last validated game state
-    currentBulletManager_.CopyAllComponents(lastValidateBulletManager_.GetAllComponents());
-    currentPhysicsManager_.CopyAllComponents(lastValidatePhysicsManager_);
-    currentPlayerManager_.CopyAllComponents(lastValidatePlayerManager_.GetAllComponents());
+    currentBulletManager_.CopyAllComponents(lastValidatedBulletManager_.GetAllComponents());
+    currentPhysicsManager_.CopyAllComponents(lastValidatedPhysicsManager_);
+    currentPlayerManager_.CopyAllComponents(lastValidatedPlayerManager_.GetAllComponents());
 
     for (Frame frame = lastValidateFrame + 1; frame <= currentFrame; frame++)
     {
@@ -175,9 +175,9 @@ void RollbackManager::ValidateFrame(Frame newValidateFrame)
     createdEntities_.clear();
 
     //We use the current game state as the temporary new validate game state
-    currentBulletManager_.CopyAllComponents(lastValidateBulletManager_.GetAllComponents());
-    currentPhysicsManager_.CopyAllComponents(lastValidatePhysicsManager_);
-    currentPlayerManager_.CopyAllComponents(lastValidatePlayerManager_.GetAllComponents());
+    currentBulletManager_.CopyAllComponents(lastValidatedBulletManager_.GetAllComponents());
+    currentPhysicsManager_.CopyAllComponents(lastValidatedPhysicsManager_);
+    currentPlayerManager_.CopyAllComponents(lastValidatedPlayerManager_.GetAllComponents());
 
     //We simulate the frames until the new validated frame
     for (Frame frame = lastValidatedFrame_ + 1; frame <= newValidateFrame; frame++)
@@ -206,9 +206,9 @@ void RollbackManager::ValidateFrame(Frame newValidateFrame)
         }
     }
     //Copy back the new validate game state to the last validated game state
-    lastValidateBulletManager_.CopyAllComponents(currentBulletManager_.GetAllComponents());
-    lastValidatePlayerManager_.CopyAllComponents(currentPlayerManager_.GetAllComponents());
-    lastValidatePhysicsManager_.CopyAllComponents(currentPhysicsManager_);
+    lastValidatedBulletManager_.CopyAllComponents(currentBulletManager_.GetAllComponents());
+    lastValidatedPlayerManager_.CopyAllComponents(currentPlayerManager_.GetAllComponents());
+    lastValidatedPhysicsManager_.CopyAllComponents(currentPhysicsManager_);
     lastValidatedFrame_ = newValidateFrame;
     createdEntities_.clear();
 }
@@ -237,7 +237,7 @@ PhysicsState RollbackManager::GetValidatePhysicsState(PlayerNumber playerNumber)
 {
     PhysicsState state = 0;
     const core::Entity playerEntity = gameManager_.GetEntityFromPlayerNumber(playerNumber);
-    const auto& playerBody = lastValidatePhysicsManager_.GetBody(playerEntity);
+    const auto& playerBody = lastValidatedPhysicsManager_.GetBody(playerEntity);
 
     const auto pos = playerBody.position;
     const auto* posPtr = reinterpret_cast<const PhysicsState*>(&pos);
@@ -293,14 +293,14 @@ void RollbackManager::SpawnPlayer(PlayerNumber playerNumber, core::Entity entity
     currentPhysicsManager_.SetBody(entity, playerBody);
     currentPhysicsManager_.AddCol(entity);
     currentPhysicsManager_.SetCol(entity, playerCol);
+    
+    lastValidatedPlayerManager_.AddComponent(entity);
+    lastValidatedPlayerManager_.SetComponent(entity, playerCharacter);
 
-    lastValidatePlayerManager_.AddComponent(entity);
-    lastValidatePlayerManager_.SetComponent(entity, playerCharacter);
-
-    lastValidatePhysicsManager_.AddBody(entity);
-    lastValidatePhysicsManager_.SetBody(entity, playerBody);
-    lastValidatePhysicsManager_.AddCol(entity);
-    lastValidatePhysicsManager_.SetCol(entity, playerCol);
+    lastValidatedPhysicsManager_.AddBody(entity);
+    lastValidatedPhysicsManager_.SetBody(entity, playerBody);
+    lastValidatedPhysicsManager_.AddCol(entity);
+    lastValidatedPhysicsManager_.SetCol(entity, playerCol);
 
     currentTransformManager_.AddComponent(entity);
     currentTransformManager_.SetPosition(entity, position);

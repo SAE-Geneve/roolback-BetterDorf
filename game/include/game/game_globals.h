@@ -3,7 +3,6 @@
  */
 
 #pragma once
-#include <SFML/Graphics/Color.hpp>
 #include <array>
 
 #include "engine/component.h"
