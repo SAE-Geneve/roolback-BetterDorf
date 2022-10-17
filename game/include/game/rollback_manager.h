@@ -2,6 +2,7 @@
 #include "game_globals.h"
 #include "physics_manager.h"
 #include "player_character.h"
+#include "glove_manager.h"
 #include "engine/entity.h"
 #include "engine/transform.h"
 #include "network/packet_type.h"
@@ -64,6 +65,13 @@ public:
     [[nodiscard]] const PlayerCharacterManager& GetPlayerCharacterManager() const { return currentPlayerManager_; }
     void SpawnPlayer(PlayerNumber playerNumber, core::Entity entity, core::Vec2f position, core::Degree rotation);
     /**
+     * \brief Set the glove's position relative to its player and create components for it
+     * \param playerEntity The player that owns the gloves
+     * \param entity The glove entity
+     * \param gloveNum inform on where to spawn the glove. 0 is right Glove 1 is left Glove
+     */
+    void SpawnGlove(core::Entity playerEntity, core::Entity entity, int gloveNum);
+    /**
      * \brief DestroyEntity is a method that does not destroy the entity definitely, but puts the DESTROY flag on.
      * An entity is truly destroyed when the destroy frame is validated.
      * \param entity is the entity to be "destroyed"
@@ -88,12 +96,13 @@ private:
     core::TransformManager currentTransformManager_;
     PhysicsManager currentPhysicsManager_;
     PlayerCharacterManager currentPlayerManager_;
+    GloveManager currentGloveManager_;
     /**
      * Last Validated (confirm frame) Component Managers used for rollback
      */
     PhysicsManager lastValidatedPhysicsManager_;
     PlayerCharacterManager lastValidatedPlayerManager_;
-
+    GloveManager lastValidatedGloveManager_;
     /**
      * \brief lastValidatedFrame_ is the last validated frame from the server side.
      */

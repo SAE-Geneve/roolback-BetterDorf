@@ -15,8 +15,10 @@ RollbackManager::RollbackManager(GameManager& gameManager, core::EntityManager& 
     gameManager_(gameManager), entityManager_(entityManager),
     currentTransformManager_(entityManager),
     currentPhysicsManager_(entityManager), currentPlayerManager_(entityManager, currentPhysicsManager_, gameManager_),
+    currentGloveManager_(entityManager, gameManager),
     lastValidatedPhysicsManager_(entityManager),
-    lastValidatedPlayerManager_(entityManager, lastValidatedPhysicsManager_, gameManager_)
+    lastValidatedPlayerManager_(entityManager, lastValidatedPhysicsManager_, gameManager_),
+    lastValidatedGloveManager_(entityManager, gameManager)
 {
     for (auto& input : inputs_)
     {
@@ -271,15 +273,16 @@ void RollbackManager::SpawnPlayer(PlayerNumber playerNumber, core::Entity entity
 #ifdef TRACY_ENABLE
     ZoneScoped;
 #endif
+    // Define player
     Body playerBody;
     playerBody.position = position;
     playerBody.rotation = rotation;
-    Circle playerCol;
-    playerCol.radius = 0.25f;
+    constexpr Circle playerCol(playerColRadius);
 
     PlayerCharacter playerCharacter;
     playerCharacter.playerNumber = playerNumber;
 
+    // Add and set components
     currentPlayerManager_.AddComponent(entity);
     currentPlayerManager_.SetComponent(entity, playerCharacter);
 
@@ -299,6 +302,49 @@ void RollbackManager::SpawnPlayer(PlayerNumber playerNumber, core::Entity entity
     currentTransformManager_.AddComponent(entity);
     currentTransformManager_.SetPosition(entity, position);
     currentTransformManager_.SetRotation(entity, rotation);
+}
+
+void RollbackManager::SpawnGlove(core::Entity playerEntity, core::Entity entity, int gloveNum)
+{
+#ifdef TRACY_ENABLE
+    ZoneScoped;
+#endif
+    // Positions are swapped if glove is on the right
+    float sign = gloveNum == 0 ? 1.0f : -1.0f;
+
+    // Define the glove based on the player
+    Body gloveBody;
+    const Body playerBody = currentPhysicsManager_.GetBody(playerEntity);
+    // Set the glove's position at its ideal location
+    gloveBody.position = playerBody.position + core::Vec2f(0,
+        gloveIdealDist).Rotate(playerBody.rotation).Rotate(gloveIdealAngle * sign);
+    gloveBody.rotation = playerBody.rotation;
+    constexpr Circle gloveCol(gloveColRadius);
+
+    Glove glove;
+    glove.sign = sign;
+    glove.playerNumber = currentPlayerManager_.GetComponent(playerEntity).playerNumber;
+
+    // Add and set components
+    currentGloveManager_.AddComponent(entity);
+    currentGloveManager_.SetComponent(entity, glove);
+
+    currentPhysicsManager_.AddBody(entity);
+    currentPhysicsManager_.SetBody(entity, gloveBody);
+    currentPhysicsManager_.AddCol(entity);
+    currentPhysicsManager_.SetCol(entity, gloveCol);
+
+    lastValidatedGloveManager_.AddComponent(entity);
+    lastValidatedGloveManager_.SetComponent(entity, glove);
+
+    lastValidatedPhysicsManager_.AddBody(entity);
+    lastValidatedPhysicsManager_.SetBody(entity, gloveBody);
+    lastValidatedPhysicsManager_.AddCol(entity);
+    lastValidatedPhysicsManager_.SetCol(entity, gloveCol);
+
+    currentTransformManager_.AddComponent(entity);
+    currentTransformManager_.SetPosition(entity, gloveBody.position);
+    currentTransformManager_.SetRotation(entity, gloveBody.rotation);
 }
 
 PlayerInput RollbackManager::GetInputAtFrame(PlayerNumber playerNumber, Frame frame) const

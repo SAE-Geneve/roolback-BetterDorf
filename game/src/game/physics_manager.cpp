@@ -218,7 +218,7 @@ void PhysicsManager::Draw(sf::RenderTarget& renderTarget)
         circleShape.setPosition(
             position.x * core::pixelPerMeter + center_.x,
             windowSize_.y - (position.y * core::pixelPerMeter + center_.y));
-        circleShape.setRadius(radius * 2.0f * core::pixelPerMeter);
+        circleShape.setRadius(radius * core::pixelPerMeter);
         renderTarget.draw(circleShape);
     }
 }

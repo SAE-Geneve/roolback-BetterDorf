@@ -39,11 +39,36 @@ void GameManager::SpawnPlayer(PlayerNumber playerNumber, core::Vec2f position, c
     rollbackManager_.SpawnPlayer(playerNumber, entity, position, rotation);
 }
 
+void GameManager::SpawnGloves(PlayerNumber playerNumber)
+{
+	const core::Entity playerEntity = GetEntityFromPlayerNumber(playerNumber);
+
+    core::LogDebug("[GameManager] Spawning glove for player");
+    // Create two gloves
+    for (int gloveNum = 0; gloveNum < 2; gloveNum++)
+    {
+        const auto entity = entityManager_.CreateEntity();
+        gloveEntityMap_[playerNumber + gloveNum] = entity;
+
+        transformManager_.AddComponent(entity);
+        // Inform the rest of the game about the glove's existence
+        rollbackManager_.SpawnGlove(playerEntity, entity, gloveNum);
+    }
+
+}
+
 core::Entity GameManager::GetEntityFromPlayerNumber(PlayerNumber playerNumber) const
 {
     return playerEntityMap_[playerNumber];
 }
 
+std::array<core::Entity, 2> GameManager::GetGlovesEntityFromPlayerNumber(PlayerNumber playerNumber) const
+{
+    std::array<core::Entity, 2> gloves{};
+    gloves[0] = gloveEntityMap_[playerNumber];
+    gloves[1] = gloveEntityMap_[playerNumber + 1];
+    return gloves;
+}
 
 void GameManager::SetPlayerInput(PlayerNumber playerNumber, PlayerInput playerInput, std::uint32_t inputFrame)
 {
@@ -68,7 +93,7 @@ void GameManager::Validate(Frame newValidateFrame)
 
 PlayerNumber GameManager::CheckWinner() const
 {
-    int alivePlayer = 0;
+    /*int alivePlayer = 0;
     PlayerNumber winner = INVALID_PLAYER;
     const auto& playerManager = rollbackManager_.GetPlayerCharacterManager();
     for (core::Entity entity = 0; entity < entityManager_.GetEntitiesSize(); entity++)
@@ -83,7 +108,9 @@ PlayerNumber GameManager::CheckWinner() const
         }
     }
 
-    return alivePlayer == 1 ? winner : INVALID_PLAYER;
+    return alivePlayer == 1 ? winner : INVALID_PLAYER;*/
+
+    return  INVALID_PLAYER;
 }
 
 void GameManager::WinGame(PlayerNumber winner)
@@ -104,9 +131,13 @@ void ClientGameManager::Begin()
     ZoneScoped;
 #endif
     //load textures
-    if (!shipTexture_.loadFromFile("data/sprites/ship.png"))
+    if (!playerTexture_.loadFromFile("data/sprites/ship.png"))
     {
         core::LogError("Could not load ship sprite");
+    }
+    if (!gloveTexture_.loadFromFile("data/sprites/glove.png"))
+    {
+        core::LogError("Could not load glove's sprite");
     }
     //load fonts
     if (!font_.loadFromFile("data/fonts/8-bit-hud.ttf"))
@@ -268,7 +299,8 @@ void ClientGameManager::Draw(sf::RenderTarget& target)
     }
     else
     {
-        std::string health;
+        // TODO change health logic to show %'s
+        /*std::string health;
         const auto& playerManager = rollbackManager_.GetPlayerCharacterManager();
         for (PlayerNumber playerNumber = 0; playerNumber < maxPlayerNmb; playerNumber++)
         {
@@ -278,9 +310,10 @@ void ClientGameManager::Draw(sf::RenderTarget& target)
                 continue;
             }
             health += fmt::format("P{} health: {} ", playerNumber + 1, playerManager.GetComponent(playerEntity).health);
-        }
+        }*/
+
         textRenderer_.setFillColor(sf::Color::White);
-        textRenderer_.setString(health);
+        textRenderer_.setString("TODO %");
         textRenderer_.setPosition(10, 10);
         textRenderer_.setCharacterSize(20);
         target.draw(textRenderer_);
@@ -300,10 +333,22 @@ void ClientGameManager::SpawnPlayer(PlayerNumber playerNumber, core::Vec2f posit
     GameManager::SpawnPlayer(playerNumber, position, rotation);
     const auto entity = GetEntityFromPlayerNumber(playerNumber);
     spriteManager_.AddComponent(entity);
-    spriteManager_.SetTexture(entity, shipTexture_);
-    spriteManager_.SetOrigin(entity, sf::Vector2f(shipTexture_.getSize()) / 2.0f);
+    spriteManager_.SetTexture(entity, playerTexture_);
+    spriteManager_.SetOrigin(entity, sf::Vector2f(playerTexture_.getSize()) / 2.0f);
     spriteManager_.SetColor(entity, playerColors[playerNumber]);
+}
 
+void ClientGameManager::SpawnGloves(PlayerNumber playerNumber)
+{
+	GameManager::SpawnGloves(playerNumber);
+
+    for (const core::Entity& entity : GetGlovesEntityFromPlayerNumber(playerNumber))
+    {
+        spriteManager_.AddComponent(entity);
+        spriteManager_.SetTexture(entity, gloveTexture_);
+        spriteManager_.SetOrigin(entity, sf::Vector2f(gloveTexture_.getSize()) / 2.0f);
+        spriteManager_.SetColor(entity, playerColors[playerNumber]);
+    }
 }
 
 void ClientGameManager::FixedUpdate()

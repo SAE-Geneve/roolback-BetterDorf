@@ -34,6 +34,7 @@ void Client::ReceivePacket(const Packet* packet)
         const auto rotation = core::ConvertFromBinary<core::Degree>(spawnPlayerPacket->angle);
 
         gameManager_.SpawnPlayer(playerNumber, pos, rotation);
+        gameManager_.SpawnGloves(playerNumber);
         break;
     }
     case PacketType::START_GAME:

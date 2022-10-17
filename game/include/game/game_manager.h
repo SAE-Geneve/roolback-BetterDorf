@@ -28,7 +28,9 @@ public:
     GameManager();
     virtual ~GameManager() = default;
     virtual void SpawnPlayer(PlayerNumber playerNumber, core::Vec2f position, core::Degree rotation);
+    virtual void SpawnGloves(PlayerNumber playerNumber);
     [[nodiscard]] core::Entity GetEntityFromPlayerNumber(PlayerNumber playerNumber) const;
+    [[nodiscard]] std::array<core::Entity, 2> GetGlovesEntityFromPlayerNumber(PlayerNumber playerNumber) const;
     [[nodiscard]] Frame GetCurrentFrame() const { return currentFrame_; }
     [[nodiscard]] Frame GetLastValidateFrame() const { return rollbackManager_.GetLastValidateFrame(); }
     [[nodiscard]] const core::TransformManager& GetTransformManager() const { return transformManager_; }
@@ -47,6 +49,7 @@ protected:
     core::TransformManager transformManager_;
     RollbackManager rollbackManager_;
     std::array<core::Entity, maxPlayerNmb> playerEntityMap_{};
+    std::array<core::Entity, 2 * maxPlayerNmb> gloveEntityMap_{};
     Frame currentFrame_ = 0;
     PlayerNumber winner_ = INVALID_PLAYER;
 };
@@ -79,6 +82,7 @@ public:
      * \param rotation is the spawning angle of the player character 
      */
     void SpawnPlayer(PlayerNumber playerNumber, core::Vec2f position, core::Degree rotation) override;
+    void SpawnGloves(PlayerNumber playerNumber) override;
     void FixedUpdate();
     void SetPlayerInput(PlayerNumber playerNumber, PlayerInput playerInput, std::uint32_t inputFrame) override;
     void DrawImGui() override;
@@ -100,7 +104,8 @@ protected:
     unsigned long long startingTime_ = 0;
     std::uint32_t state_ = 0;
 
-    sf::Texture shipTexture_;
+    sf::Texture playerTexture_;
+    sf::Texture gloveTexture_;
     sf::Font font_;
 
     sf::Text textRenderer_;

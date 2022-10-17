@@ -12,7 +12,8 @@ struct Glove
 {
     float punchingTime = 0.0f;
     bool isPunching = false;
-    bool isRightGlove = true;
+    // Multiply the direction of the desired point, used to differentiate between the two fists
+    float sign = 0.0f;
     PlayerNumber playerNumber = INVALID_PLAYER;
 };
 
