@@ -63,7 +63,7 @@ void PlayerCharacterManager::FixedUpdate(sf::Time dt)
 
         physicsManager_.SetBody(playerEntity, playerBody);
 
-        // Change the associated gloves
+    	// Change the associated gloves
         for (const core::Entity gloveEntity : gameManager_.GetGlovesEntityFromPlayerNumber(playerNumber))
         {
             if (gloveManager_.GetComponent(gloveEntity).isPunching)
@@ -76,8 +76,8 @@ void PlayerCharacterManager::FixedUpdate(sf::Time dt)
             gloveBody.rotation = playerBody.rotation;
 
             const auto toGlove = gloveBody.position - playerBody.position;
-            gloveBody.position = playerBody.position + toGlove.Rotate(rotation);
-            gloveBody.velocity = gloveBody.velocity.Rotate(rotation);
+            gloveBody.position = playerBody.position + toGlove.Rotate(-rotation);
+            gloveBody.velocity = gloveBody.velocity.Rotate(-rotation);
 
             // Add the change in velocity
             gloveBody.velocity += playerBody.velocity - originalVel;
@@ -88,12 +88,12 @@ void PlayerCharacterManager::FixedUpdate(sf::Time dt)
         if (playerCharacter.invincibilityTime > 0.0f)
         {
             playerCharacter.invincibilityTime -= dt.asSeconds();
-            SetComponent(playerEntity, playerCharacter);
         }
         if (playerCharacter.knockBackTime > 0.0f)
         {
             playerCharacter.knockBackTime -= dt.asSeconds();
         }
+        SetComponent(playerEntity, playerCharacter);
     }
 }
 }

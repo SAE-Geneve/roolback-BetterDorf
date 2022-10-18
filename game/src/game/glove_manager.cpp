@@ -63,8 +63,8 @@ void game::GloveManager::FixedUpdate(const sf::Time dt)
 					- core::Atan2(relativeUp.y, relativeUp.x));
 
 				// Set the correct bounds for the glove
-				const core::Degree bound1 = core::GetPosAngle(glove.sign >= 1.0f ? gloveAngle1 : gloveAngle2) * glove.sign;
-				const core::Degree bound2 = core::GetPosAngle(glove.sign >= 1.0f ? gloveAngle2 : gloveAngle1) * glove.sign;
+				const core::Degree bound1 = core::GetPosAngle(glove.sign >= 1.0f ? gloveAngle1 : gloveAngle2 * glove.sign);
+				const core::Degree bound2 = core::GetPosAngle(glove.sign >= 1.0f ? gloveAngle2 : gloveAngle1 * glove.sign);
 
 				// Check if outstide sector
 				if (core::GetPosAngle(bound2 - bound1).value()
