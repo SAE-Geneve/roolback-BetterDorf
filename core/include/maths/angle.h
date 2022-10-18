@@ -160,4 +160,16 @@ inline Radian Atan2(float y, float x)
 {
     return {std::atan2(y,x)};
 }
+
+inline Degree GetPosAngle(const Degree degree)
+{
+    constexpr float mod = 360.0f;
+    return fmod(degree.value() + mod, mod);
+}
+
+inline Radian GetPosAngle(const Radian radian)
+{
+	constexpr float mod = 2.0f * core::PI;
+    return fmod(radian.value() + mod, mod);
+}
 }

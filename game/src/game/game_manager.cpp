@@ -48,7 +48,7 @@ void GameManager::SpawnGloves(PlayerNumber playerNumber)
     for (int gloveNum = 0; gloveNum < 2; gloveNum++)
     {
         const auto entity = entityManager_.CreateEntity();
-        gloveEntityMap_[playerNumber + gloveNum] = entity;
+        gloveEntityMap_[playerNumber * 2 + gloveNum] = entity;
 
         transformManager_.AddComponent(entity);
         // Inform the rest of the game about the glove's existence
@@ -65,8 +65,8 @@ core::Entity GameManager::GetEntityFromPlayerNumber(PlayerNumber playerNumber) c
 std::array<core::Entity, 2> GameManager::GetGlovesEntityFromPlayerNumber(PlayerNumber playerNumber) const
 {
     std::array<core::Entity, 2> gloves{};
-    gloves[0] = gloveEntityMap_[playerNumber];
-    gloves[1] = gloveEntityMap_[playerNumber + 1];
+    gloves[0] = gloveEntityMap_[playerNumber * 2];
+    gloves[1] = gloveEntityMap_[playerNumber * 2 + 1];
     return gloves;
 }
 

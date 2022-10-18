@@ -5,6 +5,7 @@
 
 namespace game
 {
+class PhysicsManager;
 /**
  * \brief A glove is a struct that keeps track of the player's punching glovesl. It handles states such as punching.
  */
@@ -25,9 +26,10 @@ class GameManager;
 class GloveManager : public core::ComponentManager<Glove, static_cast<core::EntityMask>(ComponentType::GLOVE)>
 {
 public:
-    explicit GloveManager(core::EntityManager& entityManager, GameManager& gameManager);
+    explicit GloveManager(core::EntityManager& entityManager, PhysicsManager& physicsManager, GameManager& gameManager);
     void FixedUpdate(sf::Time dt);
 private:
     GameManager& gameManager_;
+    PhysicsManager& physicsManager_;
 };
 }

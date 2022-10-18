@@ -15,10 +15,10 @@ RollbackManager::RollbackManager(GameManager& gameManager, core::EntityManager& 
     gameManager_(gameManager), entityManager_(entityManager),
     currentTransformManager_(entityManager),
     currentPhysicsManager_(entityManager), currentPlayerManager_(entityManager, currentPhysicsManager_, gameManager_),
-    currentGloveManager_(entityManager, gameManager),
+    currentGloveManager_(entityManager, currentPhysicsManager_, gameManager),
     lastValidatedPhysicsManager_(entityManager),
     lastValidatedPlayerManager_(entityManager, lastValidatedPhysicsManager_, gameManager_),
-    lastValidatedGloveManager_(entityManager, gameManager)
+    lastValidatedGloveManager_(entityManager, lastValidatedPhysicsManager_, gameManager)
 {
     for (auto& input : inputs_)
     {
@@ -76,6 +76,7 @@ void RollbackManager::SimulateToCurrentFrame()
         }
         //Simulate one frame of the game
         currentPlayerManager_.FixedUpdate(sf::seconds(fixedPeriod));
+        currentGloveManager_.FixedUpdate(sf::seconds(fixedPeriod));
         currentPhysicsManager_.FixedUpdate(sf::seconds(fixedPeriod));
     }
     //Copy the physics states to the transforms
@@ -192,6 +193,7 @@ void RollbackManager::ValidateFrame(Frame newValidateFrame)
         }
         //We simulate one frame
         currentPlayerManager_.FixedUpdate(sf::seconds(fixedPeriod));
+        currentGloveManager_.FixedUpdate(sf::seconds(fixedPeriod));
         currentPhysicsManager_.FixedUpdate(sf::seconds(fixedPeriod));
     }
     //Definitely remove DESTROY entities

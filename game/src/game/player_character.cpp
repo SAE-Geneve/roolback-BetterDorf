@@ -36,19 +36,36 @@ void PlayerCharacterManager::FixedUpdate(sf::Time dt)
         const bool up = input & PlayerInputEnum::PlayerInput::UP;
         const bool down = input & PlayerInputEnum::PlayerInput::DOWN;
 
-        const auto angularVelocity = ((left ? -1.0f : 0.0f) + (right ? 1.0f : 0.0f)) * playerAngularSpeed;
+        playerBody.rotation += ((left ? -1.0f : 0.0f) + (right ? 1.0f : 0.0f)) * playerRotationalSpeed * dt.asSeconds();
 
-        playerBody.angularVelocity = angularVelocity;
+        const auto dir = core::Vec2f::up().Rotate(-playerBody.rotation);
 
-        auto dir = core::Vec2f::up();
-        dir = dir.Rotate(-(playerBody.rotation + playerBody.angularVelocity * dt.asSeconds()));
+        const auto speed = ((down ? -1.0f : 0.0f) + (up ? 1.0f : 0.0f)) * dir * playerSpeed;
 
-        const auto acceleration = ((down ? -1.0f : 0.0f) + (up ? 1.0f : 0.0f)) * dir;
+        playerBody.velocity += speed * dt.asSeconds();
 
+        if (playerCharacter.knockBackTime >= 0.0f)
+        {
+            playerCharacter.knockBackTime -= dt.asSeconds();
+        }
 
-        playerBody.velocity += acceleration * dt.asSeconds();
+        // Reduce velocity to match max speed if player isn't being knocked back
+        if (playerCharacter.knockBackTime <= 0.0f)
+        {
+	        
+        }
 
         physicsManager_.SetBody(playerEntity, playerBody);
+
+        // Change the associated gloves
+        for (const core::Entity gloveEntity : gameManager_.GetGlovesEntityFromPlayerNumber(playerNumber))
+        {
+            Body gloveBody = physicsManager_.GetBody(gloveEntity);
+
+            gloveBody.rotation = playerBody.rotation;
+
+            physicsManager_.SetBody(gloveEntity, gloveBody);
+        }
 
         if (playerCharacter.invincibilityTime > 0.0f)
         {

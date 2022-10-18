@@ -35,29 +35,29 @@ using Frame = std::uint32_t;
  */
 constexpr std::uint32_t maxPlayerNmb = 2;
 constexpr float playerSpeed = 1.0f;
-constexpr core::Degree playerAngularSpeed = core::Degree(90.0f);
-constexpr float playerColRadius = 0.2f;
+constexpr core::Degree playerRotationalSpeed(90.0f);
+constexpr float playerColRadius = 0.5f;
 constexpr float playerInvincibilityPeriod = 1.5f;
 constexpr float invincibilityFlashPeriod = 0.5f;
 
-constexpr float gloveMinDist = 0.7f;
-constexpr float gloveMaxDist = 1.2f;
-constexpr float gloveIdealDist = 1.0f;
+constexpr float gloveMinDist = 1.1f;
+constexpr float gloveMaxDist = 1.7f;
+constexpr float gloveIdealDist = 1.5f;
 constexpr float gloveDamage = 1.0f;
-constexpr float gloveColRadius = 0.2f;
+constexpr float gloveColRadius = 0.4f;
 /**
  * \brief Starting angle for the section where the glove is allowed to be in
  */
-constexpr core::Radian gloveAngle1 = 20.0f;
+constexpr core::Degree gloveAngle1(20.0f);
 /**
 * \brief Ending angle for the section where the glove is allowed to be in
 */
-constexpr core::Radian gloveAngle2 = 95.0f;
-constexpr core::Radian gloveIdealAngle = 30.0f;
+constexpr core::Degree gloveAngle2(95.0f);
+constexpr core::Degree gloveIdealAngle(35.0f);
 
 constexpr float punchingTime = 0.4f;
 constexpr float punchingSpeed = 10.0f;
-constexpr float gloveHoverForce = 2.0f;
+constexpr float gloveHoverForce = 1.0f;
 /**
  * \brief windowBufferSize is the size of input stored by a client. 5 seconds of frame at 50 fps
  */

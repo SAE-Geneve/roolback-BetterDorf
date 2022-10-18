@@ -12,7 +12,7 @@ class PhysicsManager;
  */
 struct PlayerCharacter
 {
-    float shootingTime = 0.0f;
+    float knockBackTime = 0.0f;
     PlayerInput input = 0u;
     PlayerNumber playerNumber = INVALID_PLAYER;
     float damagePercent = 0.0f;
