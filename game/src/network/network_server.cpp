@@ -211,6 +211,7 @@ void NetworkServer::SpawnNewPlayer([[maybe_unused]] ClientId clientId, [[maybe_u
         const auto rotation = spawnRotations[p];
         spawnPlayer->angle = core::ConvertToBinary(rotation);
         gameManager_.SpawnPlayer(p, pos, rotation);
+        gameManager_.SpawnGloves(p);
 
         SendReliablePacket(std::move(spawnPlayer));
     }

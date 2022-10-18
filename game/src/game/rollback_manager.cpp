@@ -345,6 +345,10 @@ void RollbackManager::SpawnGlove(core::Entity playerEntity, core::Entity entity,
     currentTransformManager_.AddComponent(entity);
     currentTransformManager_.SetPosition(entity, gloveBody.position);
     currentTransformManager_.SetRotation(entity, gloveBody.rotation);
+
+    currentTransformManager_.AddComponent(entity);
+    currentTransformManager_.SetPosition(entity, gloveBody.position);
+    currentTransformManager_.SetRotation(entity, gloveBody.rotation);
 }
 
 PlayerInput RollbackManager::GetInputAtFrame(PlayerNumber playerNumber, Frame frame) const
