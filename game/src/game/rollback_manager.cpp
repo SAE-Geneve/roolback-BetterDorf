@@ -14,10 +14,10 @@ namespace game
 RollbackManager::RollbackManager(GameManager& gameManager, core::EntityManager& entityManager) :
     gameManager_(gameManager), entityManager_(entityManager),
     currentTransformManager_(entityManager),
-    currentPhysicsManager_(entityManager), currentPlayerManager_(entityManager, currentPhysicsManager_, gameManager_),
-    currentGloveManager_(entityManager, currentPhysicsManager_, gameManager),
+    currentPhysicsManager_(entityManager),
+    currentPlayerManager_(entityManager, currentPhysicsManager_, gameManager_, currentGloveManager_), currentGloveManager_(entityManager, currentPhysicsManager_, gameManager),
     lastValidatedPhysicsManager_(entityManager),
-    lastValidatedPlayerManager_(entityManager, lastValidatedPhysicsManager_, gameManager_),
+    lastValidatedPlayerManager_(entityManager, lastValidatedPhysicsManager_, gameManager_, lastValidatedGloveManager_),
     lastValidatedGloveManager_(entityManager, lastValidatedPhysicsManager_, gameManager)
 {
     for (auto& input : inputs_)

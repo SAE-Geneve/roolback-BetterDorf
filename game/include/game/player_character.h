@@ -6,6 +6,7 @@
 namespace game
 {
 class PhysicsManager;
+class GloveManager;
 
 /**
  * \brief PlayerCharacter is a struct that holds information about the player character (when they can shoot again, their current input, and their current health).
@@ -26,11 +27,12 @@ class GameManager;
 class PlayerCharacterManager : public core::ComponentManager<PlayerCharacter, static_cast<core::EntityMask>(ComponentType::PLAYER_CHARACTER)>
 {
 public:
-    explicit PlayerCharacterManager(core::EntityManager& entityManager, PhysicsManager& physicsManager, GameManager& gameManager);
+    explicit PlayerCharacterManager(core::EntityManager& entityManager, PhysicsManager& physicsManager, GameManager& gameManager, GloveManager& gloveManager);
     void FixedUpdate(sf::Time dt);
 
 private:
     PhysicsManager& physicsManager_;
     GameManager& gameManager_;
+    GloveManager& gloveManager_;
 };
 }

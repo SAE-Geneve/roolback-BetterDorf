@@ -42,6 +42,14 @@ Vec2f Vec2f::operator/(float f) const
     return {x / f, y / f};
 }
 
+bool Vec2f::operator==(const Vec2f& v) const
+{
+	const bool xSimilar = std::abs(x - v.x) < FLT_EPSILON;
+	const bool ySimilar = std::abs(y - v.y) < FLT_EPSILON;
+
+    return  xSimilar && ySimilar;
+}
+
 Vec2f operator*(float f, Vec2f v)
 {
     return v*f;

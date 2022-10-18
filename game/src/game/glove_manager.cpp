@@ -97,8 +97,10 @@ void game::GloveManager::FixedUpdate(const sf::Time dt)
 					}
 				}
 
-				// Apply force to get to desired point
-				gloveBody.velocity += (goalPos - gloveBody.position) * gloveHoverForce;
+				// Apply force to get to desired point using seeking behaviour
+				const auto toPoint = goalPos - gloveBody.position;
+				const auto toVelocity = toPoint - gloveBody.velocity;
+				gloveBody.velocity += toVelocity * gloveHoverForce * dt.asSeconds();
 			}
 
 			// Apply the component changes
