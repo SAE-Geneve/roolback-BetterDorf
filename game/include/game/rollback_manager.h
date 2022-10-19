@@ -68,9 +68,11 @@ public:
      * \brief Set the glove's position relative to its player and create components for it
      * \param playerEntity The player that owns the gloves
      * \param entity The glove entity
+     * \param position Position of the glove entity
+     * \param rotation Rotation of the glove entity
      * \param gloveNum inform on where to spawn the glove. 0 is right Glove 1 is left Glove
      */
-    void SpawnGlove(core::Entity playerEntity, core::Entity entity, int gloveNum);
+    void SpawnGlove(core::Entity playerEntity, core::Entity entity, core::Vec2f position, core::Degree rotation, float sign);
     /**
      * \brief DestroyEntity is a method that does not destroy the entity definitely, but puts the DESTROY flag on.
      * An entity is truly destroyed when the destroy frame is validated.

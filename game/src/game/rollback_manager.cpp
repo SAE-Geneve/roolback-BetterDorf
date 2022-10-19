@@ -306,21 +306,16 @@ void RollbackManager::SpawnPlayer(PlayerNumber playerNumber, core::Entity entity
     currentTransformManager_.SetRotation(entity, rotation);
 }
 
-void RollbackManager::SpawnGlove(core::Entity playerEntity, core::Entity entity, int gloveNum)
+void RollbackManager::SpawnGlove(core::Entity playerEntity, core::Entity entity, core::Vec2f position, core::Degree rotation, float sign)
 {
 #ifdef TRACY_ENABLE
     ZoneScoped;
 #endif
-    // Positions are swapped if glove is on the right
-    float sign = gloveNum == 0 ? 1.0f : -1.0f;
-
     // Define the glove based on the player
     Body gloveBody;
-    const Body playerBody = currentPhysicsManager_.GetBody(playerEntity);
     // Set the glove's position at its ideal location
-    gloveBody.position = playerBody.position + core::Vec2f(0,
-        gloveIdealDist).Rotate(playerBody.rotation).Rotate(gloveIdealAngle * sign);
-    gloveBody.rotation = playerBody.rotation;
+    gloveBody.position = position;
+    gloveBody.rotation = rotation;
     constexpr Circle gloveCol(gloveColRadius);
 
     Glove glove;
@@ -343,10 +338,6 @@ void RollbackManager::SpawnGlove(core::Entity playerEntity, core::Entity entity,
     lastValidatedPhysicsManager_.SetBody(entity, gloveBody);
     lastValidatedPhysicsManager_.AddCol(entity);
     lastValidatedPhysicsManager_.SetCol(entity, gloveCol);
-
-    currentTransformManager_.AddComponent(entity);
-    currentTransformManager_.SetPosition(entity, gloveBody.position);
-    currentTransformManager_.SetRotation(entity, gloveBody.rotation);
 
     currentTransformManager_.AddComponent(entity);
     currentTransformManager_.SetPosition(entity, gloveBody.position);

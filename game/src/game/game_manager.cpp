@@ -39,7 +39,7 @@ void GameManager::SpawnPlayer(PlayerNumber playerNumber, core::Vec2f position, c
     rollbackManager_.SpawnPlayer(playerNumber, entity, position, rotation);
 }
 
-void GameManager::SpawnGloves(PlayerNumber playerNumber)
+void GameManager::SpawnGloves(PlayerNumber playerNumber, core::Vec2f playerPos, core::Degree playerRot)
 {
 	const core::Entity playerEntity = GetEntityFromPlayerNumber(playerNumber);
 
@@ -50,9 +50,18 @@ void GameManager::SpawnGloves(PlayerNumber playerNumber)
         const auto entity = entityManager_.CreateEntity();
         gloveEntityMap_[playerNumber * 2 + gloveNum] = entity;
 
+        // Calculate position and rotation
+        // Positions are swapped if glove is on the right
+        const float sign = gloveNum == 0 ? 1.0f : -1.0f;
+        const auto position = playerPos + core::Vec2f(0, gloveIdealDist).Rotate(-playerRot).Rotate(gloveIdealAngle * sign);
+        const auto rotation = playerRot;
+
         transformManager_.AddComponent(entity);
+        transformManager_.SetPosition(entity, position);
+        transformManager_.SetRotation(entity, rotation);
+
         // Inform the rest of the game about the glove's existence
-        rollbackManager_.SpawnGlove(playerEntity, entity, gloveNum);
+        rollbackManager_.SpawnGlove(playerEntity, entity, position, rotation, sign);
     }
 
 }
@@ -338,9 +347,9 @@ void ClientGameManager::SpawnPlayer(PlayerNumber playerNumber, core::Vec2f posit
     spriteManager_.SetColor(entity, playerColors[playerNumber]);
 }
 
-void ClientGameManager::SpawnGloves(PlayerNumber playerNumber)
+void ClientGameManager::SpawnGloves(PlayerNumber playerNumber, core::Vec2f playerPos, core::Degree playerRot)
 {
-	GameManager::SpawnGloves(playerNumber);
+	GameManager::SpawnGloves(playerNumber, playerPos,  playerRot);
 
     for (const core::Entity& entity : GetGlovesEntityFromPlayerNumber(playerNumber))
     {

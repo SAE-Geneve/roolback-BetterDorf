@@ -130,7 +130,7 @@ void SimulationServer::SpawnNewPlayer(ClientId clientId, PlayerNumber playerNumb
     const auto rotation = spawnRotations[playerNumber];
     spawnPlayer->angle = core::ConvertToBinary(rotation);
     gameManager_.SpawnPlayer(playerNumber, pos, rotation);
-    gameManager_.SpawnGloves(playerNumber);
+    gameManager_.SpawnGloves(playerNumber, pos, rotation);
     SendReliablePacket(std::move(spawnPlayer));
 }
 }

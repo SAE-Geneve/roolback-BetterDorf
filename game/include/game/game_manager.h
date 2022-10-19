@@ -28,7 +28,7 @@ public:
     GameManager();
     virtual ~GameManager() = default;
     virtual void SpawnPlayer(PlayerNumber playerNumber, core::Vec2f position, core::Degree rotation);
-    virtual void SpawnGloves(PlayerNumber playerNumber);
+    virtual void SpawnGloves(PlayerNumber playerNumber, core::Vec2f playerPos, core::Degree playerRot);
     [[nodiscard]] core::Entity GetEntityFromPlayerNumber(PlayerNumber playerNumber) const;
     [[nodiscard]] std::array<core::Entity, 2> GetGlovesEntityFromPlayerNumber(PlayerNumber playerNumber) const;
     [[nodiscard]] Frame GetCurrentFrame() const { return currentFrame_; }
@@ -82,7 +82,7 @@ public:
      * \param rotation is the spawning angle of the player character 
      */
     void SpawnPlayer(PlayerNumber playerNumber, core::Vec2f position, core::Degree rotation) override;
-    void SpawnGloves(PlayerNumber playerNumber) override;
+    void SpawnGloves(PlayerNumber playerNumber, core::Vec2f playerPos, core::Degree playerRot) override;
     void FixedUpdate();
     void SetPlayerInput(PlayerNumber playerNumber, PlayerInput playerInput, std::uint32_t inputFrame) override;
     void DrawImGui() override;
