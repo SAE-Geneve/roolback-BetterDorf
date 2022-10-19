@@ -70,8 +70,9 @@ void PlayerCharacterManager::FixedUpdate(sf::Time dt)
         for (int i = 0; i < 2 ; i++)
         {
 	        const auto gloveEntity = gloves[i];
+            auto glove = gloveManager_.GetComponent(gloveEntity);
 
-            if (gloveManager_.GetComponent(gloveEntity).isPunching)
+            if (glove.isPunching || glove.isRecovering)
             {
                 core::LogDebug(fmt::format("{}", gloveManager_.GetComponent(gloveEntity).punchingTime));
 	            continue;
@@ -91,9 +92,6 @@ void PlayerCharacterManager::FixedUpdate(sf::Time dt)
             // Handle punching input
             if (punch[i])
             {
-                core::LogDebug("Punching");
-
-                auto glove = gloveManager_.GetComponent(gloveEntity);
                 glove.isPunching = true;
                 glove.punchingTime = punchWindUptime;
 

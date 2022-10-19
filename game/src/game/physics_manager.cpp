@@ -128,17 +128,26 @@ void PhysicsManager::FixedUpdate(const sf::Time dt)
             static_cast<core::EntityMask>(core::ComponentType::CIRCLE_COLLIDER2D)) ||
             entityManager_.HasComponent(entity, static_cast<core::EntityMask>(ComponentType::DESTROYED)))
             continue;
+
         for (core::Entity otherEntity = entity + 1; otherEntity < entityManager_.GetEntitiesSize(); otherEntity++)
         {
             if (!entityManager_.HasComponent(otherEntity,
                 static_cast<core::EntityMask>(core::ComponentType::BODY2D) | static_cast<core::EntityMask>(core::ComponentType::CIRCLE_COLLIDER2D)) ||
                 entityManager_.HasComponent(otherEntity, static_cast<core::EntityMask>(ComponentType::DESTROYED)))
+            {
                 continue;
+            }
+
             Body& rb1 = bodyManager_.GetComponent(entity);
             const Circle& col1 = colManager_.GetComponent(entity);
 
         	Body& rb2 = bodyManager_.GetComponent(otherEntity);
             const Circle& col2 = colManager_.GetComponent(otherEntity);
+
+            if (!col1.enabled || !col2.enabled)
+            {
+	            continue;
+            }
 
             if (radiiIntersect(rb1.position, col1.radius, rb2.position, col2.radius))
             {
@@ -207,7 +216,7 @@ void PhysicsManager::Draw(sf::RenderTarget& renderTarget)
             static_cast<core::EntityMask>(core::ComponentType::CIRCLE_COLLIDER2D)) ||
             entityManager_.HasComponent(entity, static_cast<core::EntityMask>(ComponentType::DESTROYED)))
             continue;
-        const auto& [radius, isTrigger] = colManager_.GetComponent(entity);
+        const auto& [radius, isTrigger, enabled] = colManager_.GetComponent(entity);
         const auto& body = bodyManager_.GetComponent(entity);
         sf::CircleShape circleShape;
         circleShape.setFillColor(core::Color::transparent());

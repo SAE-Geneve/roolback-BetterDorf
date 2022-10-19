@@ -431,6 +431,12 @@ void RollbackManager::ManageGGCollision(auto firstGloveEntity, auto secondGloveE
     if (glove1.isPunching)
 	{
         glove1.isRecovering = true;
+        glove1.recoveryTime = gloveRecoveryTime;
+
+        auto col = currentPhysicsManager_.Getcol(firstGloveEntity);
+        col.isTrigger = false;
+        col.enabled = false;
+        currentPhysicsManager_.SetCol(firstGloveEntity, col);
 
         if (!bothPunch)
         {
@@ -441,6 +447,12 @@ void RollbackManager::ManageGGCollision(auto firstGloveEntity, auto secondGloveE
     if (glove2.isPunching)
     {
         glove2.isRecovering = true;
+        glove2.recoveryTime = gloveRecoveryTime;
+
+        auto col = currentPhysicsManager_.Getcol(secondGloveEntity);
+        col.isTrigger = false;
+        col.enabled = false;
+        currentPhysicsManager_.SetCol(secondGloveEntity, col);
 
         if (!bothPunch)
         {

@@ -43,6 +43,7 @@ struct Circle
 {
     float radius = 0.0f;
     bool isTrigger = false;
+    bool enabled = true;
 };
 
 /**

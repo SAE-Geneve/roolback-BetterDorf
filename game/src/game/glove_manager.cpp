@@ -52,6 +52,7 @@ void game::GloveManager::FixedUpdate(const sf::Time dt)
 
 						auto col = physicsManager_.Getcol(gloveEntity);
 						col.isTrigger = false;
+						col.enabled = true;
 						physicsManager_.SetCol(gloveEntity, col);
 
 						gloveBody.position = goalPos;
@@ -67,6 +68,11 @@ void game::GloveManager::FixedUpdate(const sf::Time dt)
 						// Set it to recover
 						glove.isRecovering = true;
 						glove.recoveryTime = gloveRecoveryTime;
+
+						auto col = physicsManager_.Getcol(gloveEntity);
+						col.isTrigger = false;
+						col.enabled = false;
+						physicsManager_.SetCol(gloveEntity, col);
 					}
 					else
 					{
