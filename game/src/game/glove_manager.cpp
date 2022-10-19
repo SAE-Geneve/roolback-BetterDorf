@@ -31,22 +31,42 @@ void game::GloveManager::FixedUpdate(const sf::Time dt)
 			{
 				glove.punchingTime -= dt.asSeconds();
 			}
+			if (glove.recoveryTime >= 0.0f)
+			{
+				glove.recoveryTime -= dt.asSeconds();
+			}
 
 			if (glove.isPunching)
 			{
-				if (glove.punchingTime <= 0.0f)
+				if (glove.isRecovering)
 				{
-					if (glove.hasLaunched)
+					if (glove.recoveryTime > 0.0f)
 					{
-						// Stop the glove
+						// TODO add visual effect to communicate glove is coming back
+					}
+					else
+					{
 						glove.isPunching = false;
 						glove.hasLaunched = false;
-						
-						gloveBody.velocity = core::Vec2f::zero();
+						glove.isRecovering = false;
 
 						auto col = physicsManager_.Getcol(gloveEntity);
 						col.isTrigger = false;
 						physicsManager_.SetCol(gloveEntity, col);
+
+						gloveBody.position = goalPos;
+					}
+				}
+				else if (glove.punchingTime <= 0.0f)
+				{
+					if (glove.hasLaunched)
+					{
+						// Stop the glove
+						gloveBody.velocity = core::Vec2f::zero();
+
+						// Set it to recover
+						glove.isRecovering = true;
+						glove.recoveryTime = gloveRecoveryTime;
 					}
 					else
 					{

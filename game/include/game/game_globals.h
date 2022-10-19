@@ -42,11 +42,14 @@ constexpr core::Degree playerRotationalSpeed(90.0f);
 constexpr float playerColRadius = 0.5f;
 constexpr float playerInvincibilityPeriod = 1.5f;
 constexpr float invincibilityFlashPeriod = 0.5f;
+constexpr float playerKnockbackScaling = 1.0f;
+constexpr float playerBaseKnockbackMod = 1.0f;
 
 constexpr float gloveMinDist = 1.1f;
 constexpr float gloveMaxDist = 1.7f;
 constexpr float gloveIdealDist = 1.5f;
 constexpr float gloveDamage = 1.0f;
+constexpr float gloveKnockbackMod = 1.0f;
 constexpr float gloveColRadius = 0.4f;
 /**
  * \brief Starting angle for the section where the glove is allowed to be in
@@ -58,9 +61,10 @@ constexpr core::Degree gloveAngle1(20.0f);
 constexpr core::Degree gloveAngle2(95.0f);
 constexpr core::Degree gloveIdealAngle(35.0f);
 
-constexpr float punchWindUptime = 5.0f;
-constexpr float punchingTime = 1.4f;
-constexpr float punchingSpeed = 10.0f;
+constexpr float punchWindUptime = 0.2f;
+constexpr float punchingTime = 0.2f;
+constexpr float gloveRecoveryTime = 0.15f;
+constexpr float punchingSpeed = 15.0f;
 constexpr float gloveHoverSpeed = 1.0f;
 constexpr float gloveDistSpeedBoostDist = 0.5f;
 /**

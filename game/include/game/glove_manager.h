@@ -12,7 +12,9 @@ class PhysicsManager;
 struct Glove
 {
     float punchingTime = 0.0f;
+    float recoveryTime = 0.0f;
     bool isPunching = false;
+    bool isRecovering = false;
     bool hasLaunched = false;
     // Multiply the direction of the desired point, used to differentiate between the two fists
     float sign = 0.0f;

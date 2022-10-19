@@ -81,14 +81,34 @@ public:
     void DestroyEntity(core::Entity entity);
 
     void OnTrigger(core::Entity entity1, core::Entity entity2) override;
-        [[nodiscard]] const std::array<PlayerInput, windowBufferSize>& GetInputs(PlayerNumber playerNumber) const
+    [[nodiscard]] const std::array<PlayerInput, windowBufferSize>& GetInputs(PlayerNumber playerNumber) const
     {
         return inputs_[playerNumber];
     }
 
     PhysicsManager& GetCurrentPhysicsManager() { return currentPhysicsManager_; }
 private:
-
+    /**
+     * \brief Player to Glove collision logic
+     * \param playerEntity The player that was collided with
+     * \param gloveEntity The Glove that collided with the player
+     */
+    void ManagePGCollision(auto playerEntity, auto gloveEntity);
+    /**
+     * \brief Glove to Glove collision logic
+     * \param firstGloveEntity One of the gloves involved in the collision
+     * \param secondGloveEntity The other glove involved in the collision
+     */
+    void ManageGGCollision(auto firstGloveEntity, auto secondGloveEntity);
+    /**
+     * \brief Calculates the new velocities of a body that was punched and of the glove that delivered the punch
+     * \param gloveBody The body of the glove
+     * \param gloveEntity The entity of the glove
+     * \param otherBody The body of the punchee
+     * \param otherEntity The entity of the punched body
+     * \param mod a multiplier to apply to the punchee's velocity
+     */
+    void HandlePunchCollision(Body gloveBody, core::Entity gloveEntity, Body otherBody, core::Entity otherEntity, float mod);
     [[nodiscard]] PlayerInput GetInputAtFrame(PlayerNumber playerNumber, Frame frame) const;
     GameManager& gameManager_;
     core::EntityManager& entityManager_;
@@ -116,7 +136,7 @@ private:
     /**
      * \brief testedFrame_ is the current simulated frame used mainly for entity creation and collision.
      */
-    Frame testedFrame_ = 0; 
+    Frame testedFrame_ = 0;
 
     std::array<std::uint32_t, maxPlayerNmb> lastReceivedFrame_{};
     std::array<std::array<PlayerInput, windowBufferSize>, maxPlayerNmb> inputs_{};

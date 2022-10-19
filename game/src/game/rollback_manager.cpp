@@ -356,39 +356,22 @@ PlayerInput RollbackManager::GetInputAtFrame(PlayerNumber playerNumber, Frame fr
 
 void RollbackManager::OnTrigger(core::Entity entity1, core::Entity entity2)
 {
-    core::LogDebug("Trigger Collision");
-    //const std::function<void(const PlayerCharacter&, core::Entity, const Bullet&, core::Entity)> ManageCollision =
-    //    [this](const auto& player, auto playerEntity, const auto& bullet, auto bulletEntity)
-    //{
-    //    if (player.playerNumber != bullet.playerNumber)
-    //    {
-    //        gameManager_.DestroyBullet(bulletEntity);
-    //        //lower health point
-    //        auto playerCharacter = currentPlayerManager_.GetComponent(playerEntity);
-    //        if (playerCharacter.invincibilityTime <= 0.0f)
-    //        {
-    //            core::LogDebug(fmt::format("Player {} is hit by bullet", playerCharacter.playerNumber));
-    //            --playerCharacter.health;
-    //            playerCharacter.invincibilityTime = playerInvincibilityPeriod;
-    //        }
-    //        currentPlayerManager_.SetComponent(playerEntity, playerCharacter);
-    //    }
-    //};
-    //if (entityManager_.HasComponent(entity1, static_cast<core::EntityMask>(ComponentType::PLAYER_CHARACTER)) &&
-    //    entityManager_.HasComponent(entity2, static_cast<core::EntityMask>(ComponentType::BULLET)))
-    //{
-    //    const auto& player = currentPlayerManager_.GetComponent(entity1);
-    //    const auto& bullet = currentBulletManager_.GetComponent(entity2);
-    //    ManageCollision(player, entity1, bullet, entity2);
+    if (entityManager_.HasComponent(entity1, static_cast<core::EntityMask>(ComponentType::PLAYER_CHARACTER)) &&
+        entityManager_.HasComponent(entity2, static_cast<core::EntityMask>(ComponentType::GLOVE)))
+    {
+        ManagePGCollision(entity1, entity2);
 
-    //}
-    //if (entityManager_.HasComponent(entity2, static_cast<core::EntityMask>(ComponentType::PLAYER_CHARACTER)) &&
-    //    entityManager_.HasComponent(entity1, static_cast<core::EntityMask>(ComponentType::BULLET)))
-    //{
-    //    const auto& player = currentPlayerManager_.GetComponent(entity2);
-    //    const auto& bullet = currentBulletManager_.GetComponent(entity1);
-    //    ManageCollision(player, entity2, bullet, entity1);
-    //}
+    }
+    else if (entityManager_.HasComponent(entity2, static_cast<core::EntityMask>(ComponentType::PLAYER_CHARACTER)) &&
+        entityManager_.HasComponent(entity1, static_cast<core::EntityMask>(ComponentType::GLOVE)))
+    {
+        ManagePGCollision(entity2, entity1);
+    }
+    else if (entityManager_.HasComponent(entity1, static_cast<core::EntityMask>(ComponentType::GLOVE)) &&
+        entityManager_.HasComponent(entity2, static_cast<core::EntityMask>(ComponentType::GLOVE)))
+    {
+        ManageGGCollision(entity1, entity2);
+    }
 }
 
 void RollbackManager::DestroyEntity(core::Entity entity)
@@ -407,5 +390,87 @@ void RollbackManager::DestroyEntity(core::Entity entity)
         return;
     }
         entityManager_.AddComponent(entity, static_cast<core::EntityMask>(ComponentType::DESTROYED));
+}
+
+void RollbackManager::ManagePGCollision(auto playerEntity, auto gloveEntity)
+{
+    PlayerCharacter player = currentPlayerManager_.GetComponent(playerEntity);
+    Glove glove = currentGloveManager_.GetComponent(gloveEntity);
+
+    // Players can't hit themselves
+    if (player.playerNumber == glove.playerNumber || player.invincibilityTime > 0.0f)
+    {
+        return;
+    }
+
+    // Hit player char
+	player.invincibilityTime = playerInvincibilityPeriod;
+    player.damagePercent += gloveDamage;
+
+    // Change glove properties
+    glove.isRecovering = true;
+
+    const float knockbackMod = playerBaseKnockbackMod + playerKnockbackScaling * player.damagePercent / 100.0f;
+
+    currentPlayerManager_.SetComponent(playerEntity, player);
+    currentGloveManager_.SetComponent(gloveEntity, glove);
+
+    HandlePunchCollision(currentPhysicsManager_.GetBody(gloveEntity), gloveEntity,
+        currentPhysicsManager_.GetBody(playerEntity), playerEntity, knockbackMod);
+}
+
+void RollbackManager::ManageGGCollision(auto firstGloveEntity, auto secondGloveEntity)
+{
+    Glove glove1 = currentGloveManager_.GetComponent(firstGloveEntity);
+    Glove glove2 = currentGloveManager_.GetComponent(secondGloveEntity);
+
+    auto glove1Body = currentPhysicsManager_.GetBody(firstGloveEntity);
+    auto glove2Body = currentPhysicsManager_.GetBody(firstGloveEntity);
+
+    const bool bothPunch = glove1.isPunching && glove2.isPunching;
+    if (glove1.isPunching)
+	{
+        glove1.isRecovering = true;
+
+        if (!bothPunch)
+        {
+            HandlePunchCollision(glove1Body, firstGloveEntity,
+                glove2Body, secondGloveEntity, gloveKnockbackMod);
+        }
+    }
+    if (glove2.isPunching)
+    {
+        glove2.isRecovering = true;
+
+        if (!bothPunch)
+        {
+            HandlePunchCollision(glove2Body, secondGloveEntity,
+                glove1Body, firstGloveEntity, gloveKnockbackMod);
+        }
+    }
+
+    if (bothPunch)
+    {
+	    // Zero out
+        glove1Body.velocity = core::Vec2f::zero();
+        glove2Body.velocity = core::Vec2f::zero();
+
+        currentPhysicsManager_.SetBody(firstGloveEntity, glove1Body);
+        currentPhysicsManager_.SetBody(secondGloveEntity, glove2Body);
+    }
+
+    currentGloveManager_.SetComponent(firstGloveEntity, glove1);
+    currentGloveManager_.SetComponent(secondGloveEntity, glove2);
+}
+
+void RollbackManager::HandlePunchCollision(Body gloveBody, core::Entity gloveEntity,
+    Body otherBody, core::Entity otherEntity, float mod)
+{
+    otherBody.velocity += gloveBody.velocity.GetNormalized() * mod;
+
+    gloveBody.velocity = core::Vec2f::zero();
+
+    currentPhysicsManager_.SetBody(gloveEntity, gloveBody);
+    currentPhysicsManager_.SetBody(otherEntity, otherBody);
 }
 }
