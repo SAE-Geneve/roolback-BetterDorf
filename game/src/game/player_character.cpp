@@ -65,7 +65,7 @@ void PlayerCharacterManager::FixedUpdate(sf::Time dt)
 
         physicsManager_.SetBody(playerEntity, playerBody);
 
-    	// Change the associated gloves
+    	// Update the associated gloves
         const auto gloves = gameManager_.GetGlovesEntityFromPlayerNumber(playerNumber);
         for (int i = 0; i < 2 ; i++)
         {
@@ -73,6 +73,7 @@ void PlayerCharacterManager::FixedUpdate(sf::Time dt)
 
             if (gloveManager_.GetComponent(gloveEntity).isPunching)
             {
+                core::LogDebug(fmt::format("{}", gloveManager_.GetComponent(gloveEntity).punchingTime));
 	            continue;
             }
             Body gloveBody = physicsManager_.GetBody(gloveEntity);
@@ -90,6 +91,8 @@ void PlayerCharacterManager::FixedUpdate(sf::Time dt)
             // Handle punching input
             if (punch[i])
             {
+                core::LogDebug("Punching");
+
                 auto glove = gloveManager_.GetComponent(gloveEntity);
                 glove.isPunching = true;
                 glove.punchingTime = punchWindUptime;

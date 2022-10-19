@@ -58,7 +58,7 @@ constexpr core::Degree gloveAngle1(20.0f);
 constexpr core::Degree gloveAngle2(95.0f);
 constexpr core::Degree gloveIdealAngle(35.0f);
 
-constexpr float punchWindUptime = 0.3f;
+constexpr float punchWindUptime = 5.0f;
 constexpr float punchingTime = 1.4f;
 constexpr float punchingSpeed = 10.0f;
 constexpr float gloveHoverSpeed = 1.0f;

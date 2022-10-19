@@ -56,6 +56,7 @@ void RollbackManager::SimulateToCurrentFrame()
     //Revert the current game state to the last validated game state
     currentPhysicsManager_.CopyAllComponents(lastValidatedPhysicsManager_);
     currentPlayerManager_.CopyAllComponents(lastValidatedPlayerManager_.GetAllComponents());
+    currentGloveManager_.CopyAllComponents(lastValidatedGloveManager_.GetAllComponents());
 
     for (Frame frame = lastValidateFrame + 1; frame <= currentFrame; frame++)
     {
@@ -177,6 +178,7 @@ void RollbackManager::ValidateFrame(Frame newValidateFrame)
     //We use the current game state as the temporary new validate game state
     currentPhysicsManager_.CopyAllComponents(lastValidatedPhysicsManager_);
     currentPlayerManager_.CopyAllComponents(lastValidatedPlayerManager_.GetAllComponents());
+    currentGloveManager_.CopyAllComponents(lastValidatedGloveManager_.GetAllComponents());
 
     //We simulate the frames until the new validated frame
     for (Frame frame = lastValidatedFrame_ + 1; frame <= newValidateFrame; frame++)
@@ -206,6 +208,7 @@ void RollbackManager::ValidateFrame(Frame newValidateFrame)
     }
     //Copy back the new validate game state to the last validated game state
     lastValidatedPlayerManager_.CopyAllComponents(currentPlayerManager_.GetAllComponents());
+    lastValidatedGloveManager_.CopyAllComponents(currentGloveManager_.GetAllComponents());
     lastValidatedPhysicsManager_.CopyAllComponents(currentPhysicsManager_);
     lastValidatedFrame_ = newValidateFrame;
     createdEntities_.clear();

@@ -12,7 +12,6 @@ namespace game
 {
 void Client::ReceivePacket(const Packet* packet)
 {
-
 #ifdef TRACY_ENABLE
     ZoneScoped;
 #endif
