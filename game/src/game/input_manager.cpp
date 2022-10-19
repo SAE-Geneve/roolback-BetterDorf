@@ -19,8 +19,10 @@ PlayerInput GetPlayerInput(int index)
                 PlayerInputEnum::PlayerInput::UP : PlayerInputEnum::PlayerInput::NONE);
         clientInput1 = clientInput1 | (sf::Keyboard::isKeyPressed(sf::Keyboard::Down) ?
                 PlayerInputEnum::PlayerInput::DOWN : PlayerInputEnum::PlayerInput::NONE);
-        clientInput1 = clientInput1 | (sf::Keyboard::isKeyPressed(sf::Keyboard::RControl) ?
-                PlayerInputEnum::PlayerInput::SHOOT : PlayerInputEnum::PlayerInput::NONE);
+        clientInput1 = clientInput1 | (sf::Keyboard::isKeyPressed(sf::Keyboard::Num8) || sf::Keyboard::isKeyPressed(sf::Keyboard::Numpad8) ?
+                PlayerInputEnum::PlayerInput::PUNCH : PlayerInputEnum::PlayerInput::NONE);
+        clientInput1 = clientInput1 | (sf::Keyboard::isKeyPressed(sf::Keyboard::Num9) || sf::Keyboard::isKeyPressed(sf::Keyboard::Numpad9) ?
+            PlayerInputEnum::PlayerInput::PUNCH2 : PlayerInputEnum::PlayerInput::NONE);
 
         return clientInput1;
     }
@@ -35,8 +37,10 @@ PlayerInput GetPlayerInput(int index)
                 PlayerInputEnum::PlayerInput::UP : PlayerInputEnum::PlayerInput::NONE);
         clientInput2 = clientInput2 | (sf::Keyboard::isKeyPressed(sf::Keyboard::S) ?
                 PlayerInputEnum::PlayerInput::DOWN : PlayerInputEnum::PlayerInput::NONE);
-        clientInput2 = clientInput2 | (sf::Keyboard::isKeyPressed(sf::Keyboard::Space) ?
-                PlayerInputEnum::PlayerInput::SHOOT : PlayerInputEnum::PlayerInput::NONE);
+        clientInput2 = clientInput2 | (sf::Keyboard::isKeyPressed(sf::Keyboard::Q) ?
+                PlayerInputEnum::PlayerInput::PUNCH : PlayerInputEnum::PlayerInput::NONE);
+        clientInput2 = clientInput2 | (sf::Keyboard::isKeyPressed(sf::Keyboard::E) ?
+            PlayerInputEnum::PlayerInput::PUNCH2 : PlayerInputEnum::PlayerInput::NONE);
         return clientInput2;
     }
     default:

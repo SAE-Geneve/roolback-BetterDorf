@@ -36,8 +36,26 @@ void game::GloveManager::FixedUpdate(const sf::Time dt)
 			{
 				if (glove.punchingTime <= 0.0f)
 				{
-					glove.isPunching = false;
-					// TODO apply event logic when glove stops punching
+					if (glove.hasLaunched)
+					{
+						// Stop the glove
+						glove.isPunching = false;
+						glove.hasLaunched = false;
+						
+						gloveBody.velocity = core::Vec2f::zero();
+
+						auto col = physicsManager_.Getcol(gloveEntity);
+						col.isTrigger = false;
+						physicsManager_.SetCol(gloveEntity, col);
+					}
+					else
+					{
+						// Launch the glove
+						gloveBody.velocity += relativeUp * punchingSpeed;
+						glove.hasLaunched = true;
+
+						glove.punchingTime = punchingTime;
+					}
 				}
 			}
 			else
@@ -100,7 +118,7 @@ void game::GloveManager::FixedUpdate(const sf::Time dt)
 				// Apply force to get to desired point using seeking behaviour
 				const auto toPoint = goalPos - gloveBody.position;
 				const auto toVelocity = toPoint - gloveBody.velocity;
-				gloveBody.velocity += toVelocity * gloveHoverForce * dt.asSeconds();
+				gloveBody.velocity += toVelocity * gloveHoverSpeed * toPoint.GetMagnitude() / gloveDistSpeedBoostDist * dt.asSeconds();
 			}
 
 			// Apply the component changes

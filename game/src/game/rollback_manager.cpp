@@ -362,6 +362,7 @@ PlayerInput RollbackManager::GetInputAtFrame(PlayerNumber playerNumber, Frame fr
 
 void RollbackManager::OnTrigger(core::Entity entity1, core::Entity entity2)
 {
+    core::LogDebug("Trigger Collision");
     //const std::function<void(const PlayerCharacter&, core::Entity, const Bullet&, core::Entity)> ManageCollision =
     //    [this](const auto& player, auto playerEntity, const auto& bullet, auto bulletEntity)
     //{

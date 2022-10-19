@@ -58,9 +58,11 @@ constexpr core::Degree gloveAngle1(20.0f);
 constexpr core::Degree gloveAngle2(95.0f);
 constexpr core::Degree gloveIdealAngle(35.0f);
 
-constexpr float punchingTime = 0.4f;
+constexpr float punchWindUptime = 0.3f;
+constexpr float punchingTime = 1.4f;
 constexpr float punchingSpeed = 10.0f;
-constexpr float gloveHoverForce = 1.0f;
+constexpr float gloveHoverSpeed = 1.0f;
+constexpr float gloveDistSpeedBoostDist = 0.5f;
 /**
  * \brief windowBufferSize is the size of input stored by a client. 5 seconds of frame at 50 fps
  */
@@ -125,8 +127,8 @@ enum PlayerInput : std::uint8_t
     DOWN = 1u << 1u,
     LEFT = 1u << 2u,
     RIGHT = 1u << 3u,
-    SHOOT = 1u << 4u,
-    SHOOT2 = 1u << 5u
+    PUNCH = 1u << 4u,
+    PUNCH2 = 1u << 5u
 };
 }
 }

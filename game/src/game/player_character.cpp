@@ -35,6 +35,8 @@ void PlayerCharacterManager::FixedUpdate(sf::Time dt)
         const bool left = input & PlayerInputEnum::PlayerInput::LEFT;
         const bool up = input & PlayerInputEnum::PlayerInput::UP;
         const bool down = input & PlayerInputEnum::PlayerInput::DOWN;
+        const std::array punch = { static_cast<bool>(input & PlayerInputEnum::PlayerInput::PUNCH),
+            static_cast<bool>(input & PlayerInputEnum::PlayerInput::PUNCH2) };
 
         const auto rotation = ((left ? -1.0f : 0.0f) + (right ? 1.0f : 0.0f)) * playerRotationalSpeed * dt.asSeconds();
         playerBody.rotation += rotation;
@@ -64,8 +66,11 @@ void PlayerCharacterManager::FixedUpdate(sf::Time dt)
         physicsManager_.SetBody(playerEntity, playerBody);
 
     	// Change the associated gloves
-        for (const core::Entity gloveEntity : gameManager_.GetGlovesEntityFromPlayerNumber(playerNumber))
+        const auto gloves = gameManager_.GetGlovesEntityFromPlayerNumber(playerNumber);
+        for (int i = 0; i < 2 ; i++)
         {
+	        const auto gloveEntity = gloves[i];
+
             if (gloveManager_.GetComponent(gloveEntity).isPunching)
             {
 	            continue;
@@ -81,6 +86,21 @@ void PlayerCharacterManager::FixedUpdate(sf::Time dt)
 
             // Add the change in velocity
             gloveBody.velocity += playerBody.velocity - originalVel;
+
+            // Handle punching input
+            if (punch[i])
+            {
+                auto glove = gloveManager_.GetComponent(gloveEntity);
+                glove.isPunching = true;
+                glove.punchingTime = punchWindUptime;
+
+                // Switch collider to trigger
+                auto col = physicsManager_.Getcol(gloveEntity);
+                col.isTrigger = true;
+
+                physicsManager_.SetCol(gloveEntity, col);
+                gloveManager_.SetComponent(gloveEntity, glove);
+            }
 
             physicsManager_.SetBody(gloveEntity, gloveBody);
         }
