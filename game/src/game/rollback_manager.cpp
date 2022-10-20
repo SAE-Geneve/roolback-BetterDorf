@@ -405,12 +405,14 @@ void RollbackManager::ManagePGCollision(auto playerEntity, auto gloveEntity)
 
     // Hit player char
 	player.invincibilityTime = playerInvincibilityPeriod;
-    player.damagePercent += gloveDamage;
+    player.knockBackTime = playerKnockbackTime;
 
     // Change glove properties
     glove.isRecovering = true;
 
     const float knockbackMod = playerBaseKnockbackMod + playerKnockbackScaling * player.damagePercent / 100.0f;
+    player.damagePercent += gloveDamage;
+    core::LogDebug(fmt::format("Current knockback mod {}", knockbackMod));
 
     currentPlayerManager_.SetComponent(playerEntity, player);
     currentGloveManager_.SetComponent(gloveEntity, glove);
@@ -425,7 +427,7 @@ void RollbackManager::ManageGGCollision(auto firstGloveEntity, auto secondGloveE
     Glove glove2 = currentGloveManager_.GetComponent(secondGloveEntity);
 
     auto glove1Body = currentPhysicsManager_.GetBody(firstGloveEntity);
-    auto glove2Body = currentPhysicsManager_.GetBody(firstGloveEntity);
+    auto glove2Body = currentPhysicsManager_.GetBody(secondGloveEntity);
 
     const bool bothPunch = glove1.isPunching && glove2.isPunching && glove1.hasLaunched && glove2.hasLaunched;
     if (glove1.isPunching)
@@ -446,6 +448,7 @@ void RollbackManager::ManageGGCollision(auto firstGloveEntity, auto secondGloveE
     }
     if (glove2.isPunching)
     {
+        // TODO refactor and move this into a method in GloveManager
         glove2.isRecovering = true;
         glove2.recoveryTime = gloveRecoveryTime;
 

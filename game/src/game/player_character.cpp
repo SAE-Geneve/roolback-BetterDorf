@@ -74,7 +74,6 @@ void PlayerCharacterManager::FixedUpdate(sf::Time dt)
 
             if (glove.isPunching || glove.isRecovering)
             {
-                core::LogDebug(fmt::format("{}", gloveManager_.GetComponent(gloveEntity).punchingTime));
 	            continue;
             }
             Body gloveBody = physicsManager_.GetBody(gloveEntity);
