@@ -398,7 +398,7 @@ void RollbackManager::ManagePGCollision(auto playerEntity, auto gloveEntity)
     Glove glove = currentGloveManager_.GetComponent(gloveEntity);
 
     // Players can't hit themselves
-    if (player.playerNumber == glove.playerNumber || player.invincibilityTime > 0.0f)
+    if (player.playerNumber == glove.playerNumber || player.invincibilityTime > 0.0f || !glove.hasLaunched)
     {
         return;
     }
@@ -427,7 +427,7 @@ void RollbackManager::ManageGGCollision(auto firstGloveEntity, auto secondGloveE
     auto glove1Body = currentPhysicsManager_.GetBody(firstGloveEntity);
     auto glove2Body = currentPhysicsManager_.GetBody(firstGloveEntity);
 
-    const bool bothPunch = glove1.isPunching && glove2.isPunching;
+    const bool bothPunch = glove1.isPunching && glove2.isPunching && glove1.hasLaunched && glove2.hasLaunched;
     if (glove1.isPunching)
 	{
         glove1.isRecovering = true;
