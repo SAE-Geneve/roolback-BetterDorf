@@ -409,10 +409,15 @@ void RollbackManager::ManagePGCollision(auto playerEntity, auto gloveEntity)
 
     // Change glove properties
     glove.isRecovering = true;
+    glove.recoveryTime = gloveRecoveryTime;
+
+    auto col = currentPhysicsManager_.Getcol(gloveEntity);
+    col.isTrigger = false;
+    col.enabled = false;
+    currentPhysicsManager_.SetCol(gloveEntity, col);
 
     const float knockbackMod = playerBaseKnockbackMod + playerKnockbackScaling * player.damagePercent / 100.0f;
     player.damagePercent += gloveDamage;
-    core::LogDebug(fmt::format("Current knockback mod {}", knockbackMod));
 
     currentPlayerManager_.SetComponent(playerEntity, player);
     currentGloveManager_.SetComponent(gloveEntity, glove);

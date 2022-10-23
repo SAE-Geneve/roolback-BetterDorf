@@ -36,21 +36,20 @@ using Frame = std::uint32_t;
 constexpr std::uint32_t maxPlayerNmb = 2;
 constexpr float playerSpeed = 7.0f;
 constexpr float playerMaxSpeed = 4.5f;
-constexpr float playerMaxSqrSpeed = playerMaxSpeed * playerMaxSpeed;
 constexpr float playerFrictionLoss = 3.5f;
 constexpr core::Degree playerRotationalSpeed(180.0f);
 constexpr float playerColRadius = 0.5f;
 constexpr float playerInvincibilityPeriod = 0.5f;
 constexpr float invincibilityFlashPeriod = 0.1f;
-constexpr float playerKnockbackTime = 0.6f;
-constexpr float playerKnockbackScaling = 5.0f;
+constexpr float playerKnockbackTime = 0.8f;
+constexpr float playerKnockbackScaling = 7.0f;
 constexpr float playerBaseKnockbackMod = 3.0f;
 
 constexpr float gloveMinDist = 1.1f;
 constexpr float gloveMaxDist = 1.7f;
 constexpr float gloveIdealDist = 1.5f;
 constexpr float gloveDamage = 25.0f;
-constexpr float gloveKnockbackMod = 5.0f;
+constexpr float gloveKnockbackMod = 10.0f;
 constexpr float gloveColRadius = 0.45f;
 /**
  * \brief Starting angle for the section where the glove is allowed to be in
@@ -59,12 +58,12 @@ constexpr core::Degree gloveAngle1(20.0f);
 /**
 * \brief Ending angle for the section where the glove is allowed to be in
 */
-constexpr core::Degree gloveAngle2(95.0f);
-constexpr core::Degree gloveIdealAngle(35.0f);
+constexpr core::Degree gloveAngle2(155.0f);
+constexpr core::Degree gloveIdealAngle(40.0f);
 
 constexpr float punchWindUptime = 0.2f;
 constexpr float punchingTime = 0.15f;
-constexpr float gloveRecoveryTime = 0.15f;
+constexpr float gloveRecoveryTime = 0.35f;
 constexpr float punchingSpeed = 15.0f;
 constexpr float gloveHoverSpeed = 1.0f;
 constexpr float gloveDistSpeedBoostDist = 0.5f;

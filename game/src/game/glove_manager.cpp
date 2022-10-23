@@ -135,7 +135,7 @@ void game::GloveManager::FixedUpdate(const sf::Time dt)
 					{
 						gloveBody.position = playerBody.position + relativeUp.Rotate(bound1) * toGlove.GetMagnitude();
 					}
-					else
+					else 
 					{
 						gloveBody.position = playerBody.position + relativeUp.Rotate(bound2) * toGlove.GetMagnitude();
 					}

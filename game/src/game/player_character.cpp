@@ -17,7 +17,6 @@ PlayerCharacterManager::PlayerCharacterManager(core::EntityManager& entityManage
 
 void PlayerCharacterManager::FixedUpdate(sf::Time dt)
 {
-
 #ifdef TRACY_ENABLE
     ZoneScoped;
 #endif
@@ -51,15 +50,13 @@ void PlayerCharacterManager::FixedUpdate(sf::Time dt)
         // Reduce velocity to match max speed if player isn't being knocked back
         if (playerCharacter.knockBackTime <= 0.0f && playerBody.velocity != core::Vec2f::zero())
         {
-            auto normalizedVel = playerBody.velocity.GetNormalized();
-        	if (playerBody.velocity.GetSqrMagnitude() > playerMaxSqrSpeed)
+        	if (playerBody.velocity.GetMagnitude() > playerMaxSpeed)
         	{
-        		playerBody.velocity = normalizedVel * playerMaxSpeed;
+        		playerBody.velocity = playerBody.velocity.GetNormalized() * (playerMaxSpeed - FLT_EPSILON);
         	}
             else if (!up && !down)
             {
-                playerBody.velocity = normalizedVel * playerBody.velocity.GetMagnitude()
-            		* (1.0f - playerFrictionLoss * dt.asSeconds());
+                playerBody.velocity = playerBody.velocity * (1.0f - playerFrictionLoss * dt.asSeconds());
             }
         }
 
@@ -83,7 +80,7 @@ void PlayerCharacterManager::FixedUpdate(sf::Time dt)
 
             const auto toGlove = gloveBody.position - playerBody.position;
             gloveBody.position = playerBody.position + toGlove.Rotate(-rotation);
-            gloveBody.velocity = gloveBody.velocity.Rotate(-rotation);
+            //gloveBody.velocity = gloveBody.velocity.Rotate(-rotation);
 
             // Add the change in velocity
             gloveBody.velocity += playerBody.velocity - originalVel;
