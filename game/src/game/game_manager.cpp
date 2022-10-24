@@ -147,11 +147,11 @@ void ClientGameManager::Begin()
     ZoneScoped;
 #endif
     //load textures
-    if (!playerTexture_.loadFromFile("data/sprites/ship.png"))
+    if (!playerTexture_.loadFromFile("data/sprites/Eye.png"))
     {
         core::LogError("Could not load ship sprite");
     }
-    if (!gloveTexture_.loadFromFile("data/sprites/glove.png"))
+    if (!gloveTexture_.loadFromFile("data/sprites/Glove.png"))
     {
         core::LogError("Could not load glove's sprite");
     }
@@ -180,14 +180,7 @@ void ClientGameManager::Update(sf::Time dt)
                 static_cast<core::EntityMask>(core::ComponentType::SPRITE)))
             {
                 const auto& player = rollbackManager_.GetPlayerCharacterManager().GetComponent(entity);
-                /*
-                if (player.invincibilityTime > 0.0f)
-                {
-                    //auto leftV = std::fmod(player.invincibilityTime, invincibilityFlashPeriod);
-                    //auto rightV = invincibilityFlashPeriod / 2.0f;
-                    //core::LogDebug(fmt::format("Comparing {} and {} with time: {}", leftV, rightV, player.invincibilityTime));
-                }
-                */
+                
                 if (player.invincibilityTime > 0.0f &&
                     std::fmod(player.invincibilityTime, invincibilityFlashPeriod) > invincibilityFlashPeriod / 2.0f)
                 {
@@ -358,12 +351,23 @@ void ClientGameManager::SpawnGloves(PlayerNumber playerNumber, core::Vec2f playe
 {
 	GameManager::SpawnGloves(playerNumber, playerPos,  playerRot);
 
+    bool flip = false;
     for (const core::Entity& entity : GetGlovesEntityFromPlayerNumber(playerNumber))
     {
         spriteManager_.AddComponent(entity);
         spriteManager_.SetTexture(entity, gloveTexture_);
         spriteManager_.SetOrigin(entity, sf::Vector2f(gloveTexture_.getSize()) / 2.0f);
         spriteManager_.SetColor(entity, playerColors[playerNumber]);
+
+        // Flip the glove if it's the second one
+        if (flip)
+        {
+            sf::Sprite sprite = spriteManager_.GetComponent(entity);
+            sprite.setScale(-1.0f, 1.0f);
+            spriteManager_.SetComponent(entity, sprite);
+        }
+
+        flip = !flip;
     }
 }
 

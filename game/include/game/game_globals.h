@@ -66,7 +66,7 @@ constexpr float punchingTime = 0.15f;
 constexpr float gloveRecoveryTime = 0.35f;
 constexpr float punchingSpeed = 15.0f;
 constexpr float gloveHoverSpeed = 1.0f;
-constexpr float gloveDistSpeedBoostDist = 0.5f;
+constexpr float gloveDistSpeedBoost = 0.5f;
 
 constexpr float battleStageHeight = 15.0f;
 constexpr float battleStagewidth = 15.0f;
