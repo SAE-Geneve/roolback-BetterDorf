@@ -67,6 +67,9 @@ constexpr float gloveRecoveryTime = 0.35f;
 constexpr float punchingSpeed = 15.0f;
 constexpr float gloveHoverSpeed = 1.0f;
 constexpr float gloveDistSpeedBoostDist = 0.5f;
+
+constexpr float battleStageHeight = 15.0f;
+constexpr float battleStagewidth = 15.0f;
 /**
  * \brief windowBufferSize is the size of input stored by a client. 5 seconds of frame at 50 fps
  */
@@ -74,7 +77,7 @@ constexpr std::size_t windowBufferSize = 5u * 50u;
 /**
  * \brief startDelay is the delay to wait before starting a game in milliseconds
  */
-constexpr long long startDelay = 3000;
+constexpr long long startDelay = 1000;
 /**
  * \brief maxInputNmb is the number of inputs stored into an PlayerInputPacket
  */

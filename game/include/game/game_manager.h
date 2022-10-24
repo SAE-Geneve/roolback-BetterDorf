@@ -40,7 +40,7 @@ public:
      * \brief Validate is a method called by the server to validate a frame.
      */
     void Validate(Frame newValidateFrame);
-    [[nodiscard]] PlayerNumber CheckWinner() const;
+    [[nodiscard]] PlayerNumber CheckWinner();
     virtual void WinGame(PlayerNumber winner);
 
 

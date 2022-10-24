@@ -100,26 +100,33 @@ void GameManager::Validate(Frame newValidateFrame)
     rollbackManager_.ValidateFrame(newValidateFrame);
 }
 
-PlayerNumber GameManager::CheckWinner() const
+PlayerNumber GameManager::CheckWinner()
 {
-    /*int alivePlayer = 0;
+    int winningPlayer = 0;
     PlayerNumber winner = INVALID_PLAYER;
+    const auto& physicsManager = rollbackManager_.GetCurrentPhysicsManager();
     const auto& playerManager = rollbackManager_.GetPlayerCharacterManager();
     for (core::Entity entity = 0; entity < entityManager_.GetEntitiesSize(); entity++)
     {
         if (!entityManager_.HasComponent(entity, static_cast<core::EntityMask>(ComponentType::PLAYER_CHARACTER)))
             continue;
+        const auto& playerBody = physicsManager.GetBody(entity);
         const auto& player = playerManager.GetComponent(entity);
-        if (player.health > 0)
+
+        // Check if player is out of the bounds of the battleStage
+        if (std::abs(playerBody.position.x) > battleStagewidth / 2.0f ||
+            std::abs(playerBody.position.y) > battleStageHeight / 2.0f)
         {
-            alivePlayer++;
+            
+        }
+        else
+        {
+            winningPlayer++;
             winner = player.playerNumber;
         }
     }
 
-    return alivePlayer == 1 ? winner : INVALID_PLAYER;*/
-
-    return  INVALID_PLAYER;
+    return winningPlayer == 1 ? winner : INVALID_PLAYER;
 }
 
 void GameManager::WinGame(PlayerNumber winner)

@@ -63,6 +63,7 @@ public:
     [[nodiscard]] Frame GetCurrentFrame() const { return currentFrame_; }
     [[nodiscard]] const core::TransformManager& GetTransformManager() const { return currentTransformManager_; }
     [[nodiscard]] const PlayerCharacterManager& GetPlayerCharacterManager() const { return currentPlayerManager_; }
+    [[nodiscard]] PhysicsManager& GetCurrentPhysicsManager() { return currentPhysicsManager_; }
     void SpawnPlayer(PlayerNumber playerNumber, core::Entity entity, core::Vec2f position, core::Degree rotation);
     /**
      * \brief Set the glove's position relative to its player and create components for it
@@ -85,8 +86,6 @@ public:
     {
         return inputs_[playerNumber];
     }
-
-    PhysicsManager& GetCurrentPhysicsManager() { return currentPhysicsManager_; }
 private:
     /**
      * \brief Player to Glove collision logic
