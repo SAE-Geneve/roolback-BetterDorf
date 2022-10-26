@@ -494,7 +494,7 @@ void RollbackManager::ManageGGCollision(auto firstGloveEntity, auto secondGloveE
 void RollbackManager::HandlePunchCollision(Body gloveBody, core::Entity gloveEntity,
     Body otherBody, core::Entity otherEntity, float mod)
 {
-    otherBody.velocity += gloveBody.velocity.GetNormalized() * mod;
+    otherBody.velocity = gloveBody.velocity.GetNormalized() * mod;
 
     gloveBody.velocity = core::Vec2f::zero();
 
