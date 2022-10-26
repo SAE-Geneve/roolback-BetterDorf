@@ -29,7 +29,6 @@ RollbackManager::RollbackManager(GameManager& gameManager, core::EntityManager& 
 
 void RollbackManager::SimulateToCurrentFrame()
 {
-
 #ifdef TRACY_ENABLE
     ZoneScoped;
 #endif

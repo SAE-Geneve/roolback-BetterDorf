@@ -34,10 +34,10 @@ using Frame = std::uint32_t;
  * \brief mmaxPlayerNmb is a integer constant that defines the maximum number of player per game
  */
 constexpr std::uint32_t maxPlayerNmb = 2;
-constexpr float playerSpeed = 7.0f;
+constexpr float playerSpeed = 6.5f;
 constexpr float playerMaxSpeed = 4.5f;
 constexpr float playerFrictionLoss = 3.5f;
-constexpr core::Degree playerRotationalSpeed(180.0f);
+constexpr core::Degree playerRotationalSpeed(150.0f);
 constexpr float playerColRadius = 0.5f;
 constexpr float playerInvincibilityPeriod = 0.5f;
 constexpr float invincibilityFlashPeriod = 0.1f;
@@ -45,10 +45,10 @@ constexpr float playerKnockbackTime = 0.8f;
 constexpr float playerKnockbackScaling = 7.0f;
 constexpr float playerBaseKnockbackMod = 3.0f;
 
-constexpr float gloveMinDist = 1.1f;
-constexpr float gloveMaxDist = 1.7f;
-constexpr float gloveIdealDist = 1.5f;
-constexpr float gloveDamage = 25.0f;
+constexpr float gloveMinDist = 1.0f;
+constexpr float gloveMaxDist = 1.8f;
+constexpr float gloveIdealDist = 1.2f;
+constexpr float gloveDamage = 20.0f;
 constexpr float gloveKnockbackMod = 10.0f;
 constexpr float gloveColRadius = 0.45f;
 /**
