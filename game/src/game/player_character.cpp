@@ -44,18 +44,21 @@ void PlayerCharacterManager::FixedUpdate(sf::Time dt)
 
         const auto speed = ((down ? -1.0f : 0.0f) + (up ? 1.0f : 0.0f)) * dir * playerSpeed;
 
-        playerBody.velocity += speed * dt.asSeconds();
-
         // Reduce velocity to match max speed if player isn't being knocked back
-        if (playerCharacter.knockBackTime <= 0.0f && playerBody.velocity != core::Vec2f::zero())
+        if (playerCharacter.knockBackTime <= 0.0f)
         {
-        	if (playerBody.velocity.GetMagnitude() > playerMaxSpeed)
-        	{
-        		playerBody.velocity = playerBody.velocity.GetNormalized() * (playerMaxSpeed - FLT_EPSILON);
-        	}
-            else if (!up && !down)
+            playerBody.velocity += speed * dt.asSeconds();
+
+            if (playerBody.velocity != core::Vec2f::zero())
             {
-                playerBody.velocity = playerBody.velocity * (1.0f - playerFrictionLoss * dt.asSeconds());
+                if (playerBody.velocity.GetMagnitude() > playerMaxSpeed)
+                {
+                    playerBody.velocity = playerBody.velocity.GetNormalized() * (playerMaxSpeed - FLT_EPSILON);
+                }
+                else if (!up && !down)
+                {
+                    playerBody.velocity = playerBody.velocity * (1.0f - playerFrictionLoss * dt.asSeconds());
+                }
             }
         }
 

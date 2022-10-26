@@ -114,9 +114,6 @@ void game::GloveManager::FixedUpdate(const sf::Time dt)
 				if (core::GetPosAngle(bound2 - bound1).value()
 					< core::GetPosAngle(angleWithUp - bound1).value())
 				{
-					// Reset velocity
-					gloveBody.velocity = core::Vec2f::zero();
-
 					// Find which bound is the closest
 					float dist1 = core::GetPosAngle(angleWithUp - bound1).value();
 					float dist2 = core::GetPosAngle(angleWithUp - bound2).value();

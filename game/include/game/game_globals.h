@@ -34,23 +34,23 @@ using Frame = std::uint32_t;
  * \brief mmaxPlayerNmb is a integer constant that defines the maximum number of player per game
  */
 constexpr std::uint32_t maxPlayerNmb = 2;
-constexpr float playerSpeed = 6.5f;
+constexpr float playerSpeed = 10.5f;
 constexpr float playerMaxSpeed = 4.5f;
 constexpr float playerFrictionLoss = 3.5f;
 constexpr core::Degree playerRotationalSpeed(150.0f);
 constexpr float playerColRadius = 0.5f;
 constexpr float playerInvincibilityPeriod = 0.5f;
 constexpr float invincibilityFlashPeriod = 0.1f;
-constexpr float playerKnockbackTime = 0.8f;
+constexpr float playerKnockbackTime = 0.5f;
 constexpr float playerKnockbackScaling = 7.0f;
-constexpr float playerBaseKnockbackMod = 3.0f;
+constexpr float playerBaseKnockbackMod = 2.0f;
+constexpr float gloveKnockbackMod = 7.0f;
 
-constexpr float gloveMinDist = 1.0f;
-constexpr float gloveMaxDist = 1.8f;
-constexpr float gloveIdealDist = 1.2f;
-constexpr float gloveDamage = 20.0f;
-constexpr float gloveKnockbackMod = 10.0f;
-constexpr float gloveColRadius = 0.45f;
+constexpr float gloveMinDist = 1.15f;
+constexpr float gloveMaxDist = 1.6f;
+constexpr float gloveIdealDist = 1.3f;
+constexpr float gloveDamage = 30.0f;
+constexpr float gloveColRadius = 0.5f;
 /**
  * \brief Starting angle for the section where the glove is allowed to be in
  */
@@ -58,13 +58,13 @@ constexpr core::Degree gloveAngle1(20.0f);
 /**
 * \brief Ending angle for the section where the glove is allowed to be in
 */
-constexpr core::Degree gloveAngle2(155.0f);
+constexpr core::Degree gloveAngle2(130.0f);
 constexpr core::Degree gloveIdealAngle(40.0f);
 
-constexpr float punchWindUptime = 0.2f;
-constexpr float punchingTime = 0.15f;
+constexpr float punchWindUptime = 0.05f;
+constexpr float punchingTime = 0.18f;
 constexpr float gloveRecoveryTime = 0.35f;
-constexpr float punchingSpeed = 15.0f;
+constexpr float punchingSpeed = 10.5f;
 constexpr float gloveHoverSpeed = 1.0f;
 constexpr float gloveDistSpeedBoost = 0.5f;
 
