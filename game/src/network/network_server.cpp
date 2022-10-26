@@ -51,7 +51,7 @@ void NetworkServer::SendUnreliablePacket(
     {
         if (clientInfoMap_[playerNumber].udpRemotePort == 0)
         {
-            core::LogDebug(fmt::format("[Warning] Trying to send UDP packet, but missing port!"));
+            //core::LogDebug(fmt::format("[Warning] Trying to send UDP packet, but missing port!"));
             continue;
         }
 

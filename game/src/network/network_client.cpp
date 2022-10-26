@@ -251,7 +251,7 @@ void NetworkClient::ReceivePacket(const Packet* packet)
     }
     case PacketType::VALIDATE_STATE:
     {
-        auto* validateStatePacket = static_cast<const ValidateFramePacket*>(packet);
+        auto* validateStatePacket = static_cast<const  *>(packet);
         const auto newValidateFrame = core::ConvertFromBinary<Frame>(validateStatePacket->newValidateFrame);
         DbPhysicsState state{};
         state.validateFrame = newValidateFrame;

@@ -23,12 +23,15 @@ GameManager::GameManager() :
     rollbackManager_(*this, entityManager_)
 {
     playerEntityMap_.fill(core::INVALID_ENTITY);
+    gloveEntityMap_.fill(core::INVALID_ENTITY);
 }
 
 void GameManager::SpawnPlayer(PlayerNumber playerNumber, core::Vec2f position, core::Degree rotation)
 {
     if (GetEntityFromPlayerNumber(playerNumber) != core::INVALID_ENTITY)
+    {
         return;
+    }
     core::LogDebug("[GameManager] Spawning new player");
     const auto entity = entityManager_.CreateEntity();
     playerEntityMap_[playerNumber] = entity;
@@ -42,7 +45,10 @@ void GameManager::SpawnPlayer(PlayerNumber playerNumber, core::Vec2f position, c
 void GameManager::SpawnGloves(PlayerNumber playerNumber, core::Vec2f playerPos, core::Degree playerRot)
 {
 	const core::Entity playerEntity = GetEntityFromPlayerNumber(playerNumber);
-
+    if (GetGlovesEntityFromPlayerNumber(playerNumber)[0] != core::INVALID_ENTITY)
+    {
+        return;
+    }
     core::LogDebug("[GameManager] Spawning glove for player");
     // Create two gloves
     for (int gloveNum = 0; gloveNum < 2; gloveNum++)
