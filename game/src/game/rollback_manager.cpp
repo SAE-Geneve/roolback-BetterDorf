@@ -92,6 +92,7 @@ void RollbackManager::SimulateToCurrentFrame()
         currentTransformManager_.SetRotation(entity, body.rotation);
     }
 }
+
 void RollbackManager::SetPlayerInput(PlayerNumber playerNumber, PlayerInput playerInput, Frame inputFrame)
 {
     //Should only be called on the server
@@ -238,36 +239,43 @@ PhysicsState RollbackManager::GetValidatePhysicsState(PlayerNumber playerNumber)
 {
     PhysicsState state = 0;
     const core::Entity playerEntity = gameManager_.GetEntityFromPlayerNumber(playerNumber);
+    const std::array<core::Entity, 2> gloveEntities = gameManager_.GetGlovesEntityFromPlayerNumber(playerNumber);
     const auto& playerBody = lastValidatedPhysicsManager_.GetBody(playerEntity);
+    const std::array<Body, 2>& gloveBodies = {lastValidatedPhysicsManager_.GetBody(gloveEntities[0]),
+    	lastValidatedPhysicsManager_.GetBody(gloveEntities[1]) };
 
-    const auto pos = playerBody.position;
-    const auto* posPtr = reinterpret_cast<const PhysicsState*>(&pos);
+    const auto* posPtr = reinterpret_cast<const PhysicsState*>(&playerBody.position);
+    const auto* posPtr2 = reinterpret_cast<const PhysicsState*>(&gloveBodies[0].position);
+    const auto* posPtr3 = reinterpret_cast<const PhysicsState*>(&gloveBodies[1].position);
     //Adding position
     for (size_t i = 0; i < sizeof(core::Vec2f) / sizeof(PhysicsState); i++)
     {
-        state += posPtr[i];
+        state += posPtr[i] + posPtr2[i] + posPtr3[i];
     }
 
     //Adding velocity
-    const auto velocity = playerBody.velocity;
-    const auto* velocityPtr = reinterpret_cast<const PhysicsState*>(&velocity);
+    const auto* velocityPtr = reinterpret_cast<const PhysicsState*>(&playerBody.velocity);
+    const auto* velocityPtr2 = reinterpret_cast<const PhysicsState*>(&gloveBodies[0].velocity);
+    const auto* velocityPtr3 = reinterpret_cast<const PhysicsState*>(&gloveBodies[1].velocity);
     for (size_t i = 0; i < sizeof(core::Vec2f) / sizeof(PhysicsState); i++)
     {
-        state += velocityPtr[i];
+        state += velocityPtr[i] + velocityPtr2[i] + velocityPtr3[i];
     }
     //Adding rotation
-    const auto angle = playerBody.rotation.value();
-    const auto* anglePtr = reinterpret_cast<const PhysicsState*>(&angle);
+    const auto* anglePtr = reinterpret_cast<const PhysicsState*>(&playerBody.rotation);
+    const auto* anglePtr2 = reinterpret_cast<const PhysicsState*>(&gloveBodies[0].rotation);
+    const auto* anglePtr3 = reinterpret_cast<const PhysicsState*>(&gloveBodies[1].rotation);
     for (size_t i = 0; i < sizeof(float) / sizeof(PhysicsState); i++)
     {
-        state += anglePtr[i];
+        state += anglePtr[i] + anglePtr2[i] + anglePtr3[i];
     }
     //Adding angular Velocity
-    const auto angularVelocity = playerBody.angularVelocity.value();
-    const auto* angularVelPtr = reinterpret_cast<const PhysicsState*>(&angularVelocity);
+    const auto* angularVelPtr = reinterpret_cast<const PhysicsState*>(&playerBody.angularVelocity);
+    const auto* angularVelPtr2 = reinterpret_cast<const PhysicsState*>(&gloveBodies[0].angularVelocity);
+    const auto* angularVelPtr3 = reinterpret_cast<const PhysicsState*>(&gloveBodies[1].angularVelocity);
     for (size_t i = 0; i < sizeof(float) / sizeof(PhysicsState); i++)
     {
-        state += angularVelPtr[i];
+        state += angularVelPtr[i] + angularVelPtr2[i] + angularVelPtr3[i];
     }
     return state;
 }

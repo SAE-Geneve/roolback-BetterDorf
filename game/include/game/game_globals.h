@@ -77,7 +77,7 @@ constexpr std::size_t windowBufferSize = 5u * 50u;
 /**
  * \brief startDelay is the delay to wait before starting a game in milliseconds
  */
-constexpr long long startDelay = 1000;
+constexpr long long startDelay = 3000;
 /**
  * \brief maxInputNmb is the number of inputs stored into an PlayerInputPacket
  */

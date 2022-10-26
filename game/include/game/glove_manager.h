@@ -16,6 +16,7 @@ struct Glove
     bool isPunching = false;
     bool isRecovering = false;
     bool hasLaunched = false;
+    core::Vec2f velFromPlayer = core::Vec2f::zero();
     // Multiply the direction of the desired point, used to differentiate between the two fists
     float sign = 0.0f;
     PlayerNumber playerNumber = INVALID_PLAYER;

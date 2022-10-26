@@ -44,7 +44,6 @@ void PlayerCharacterManager::FixedUpdate(sf::Time dt)
 
         const auto speed = ((down ? -1.0f : 0.0f) + (up ? 1.0f : 0.0f)) * dir * playerSpeed;
 
-        const auto originalVel = playerBody.velocity;
         playerBody.velocity += speed * dt.asSeconds();
 
         // Reduce velocity to match max speed if player isn't being knocked back
@@ -79,11 +78,14 @@ void PlayerCharacterManager::FixedUpdate(sf::Time dt)
             gloveBody.rotation = playerBody.rotation;
 
             const auto toGlove = gloveBody.position - playerBody.position;
-            gloveBody.position = playerBody.position + toGlove.Rotate(-rotation);
+            gloveBody.position = playerBody.position + toGlove.Rotate(-rotation); 
             //gloveBody.velocity = gloveBody.velocity.Rotate(-rotation);
 
             // Add the change in velocity
-            gloveBody.velocity += playerBody.velocity - originalVel;
+            gloveBody.velocity -= glove.velFromPlayer;
+            glove.velFromPlayer = playerBody.velocity;
+            gloveBody.velocity = gloveBody.velocity.Rotate(-rotation);
+            gloveBody.velocity += playerBody.velocity;
 
             // Handle punching input
             if (punch[i])
@@ -96,8 +98,8 @@ void PlayerCharacterManager::FixedUpdate(sf::Time dt)
                 col.isTrigger = true;
 
                 physicsManager_.SetCol(gloveEntity, col);
-                gloveManager_.SetComponent(gloveEntity, glove);
             }
+            gloveManager_.SetComponent(gloveEntity, glove);
 
             physicsManager_.SetBody(gloveEntity, gloveBody);
         }

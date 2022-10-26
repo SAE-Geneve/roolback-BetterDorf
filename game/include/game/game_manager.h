@@ -106,6 +106,7 @@ protected:
 
     sf::Texture playerTexture_;
     sf::Texture gloveTexture_;
+    sf::Texture stageTexture_;
     sf::Font font_;
 
     sf::Text textRenderer_;

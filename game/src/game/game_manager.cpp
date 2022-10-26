@@ -155,12 +155,29 @@ void ClientGameManager::Begin()
     {
         core::LogError("Could not load glove's sprite");
     }
+    if (!stageTexture_.loadFromFile("data/sprites/Stage.png"))
+    {
+        core::LogError("Could not load stage sprite");
+    }
     //load fonts
     if (!font_.loadFromFile("data/fonts/8-bit-hud.ttf"))
     {
         core::LogError("Could not load font");
     }
     textRenderer_.setFont(font_);
+
+    // TODO move stage and background elements to their own class
+    auto stageEnt = entityManager_.CreateEntity();
+    spriteManager_.AddComponent(stageEnt);
+    spriteManager_.SetTexture(stageEnt, stageTexture_);
+    spriteManager_.SetOrigin(stageEnt, static_cast<sf::Vector2f>(stageTexture_.getSize()) / 2.0f);
+    auto& sprite = spriteManager_.GetComponent(stageEnt);
+    auto size = stageTexture_.getSize();
+    spriteManager_.SetComponent(stageEnt, sprite);
+    transformManager_.AddComponent(stageEnt);
+    transformManager_.SetScale(stageEnt, { battleStagewidth / static_cast<float>(size.x) * core::pixelPerMeter,
+        battleStageHeight / static_cast<float>(size.y) * core::pixelPerMeter } );
+    transformManager_.SetPosition(stageEnt, core::Vec2f::zero());
 }
 
 void ClientGameManager::Update(sf::Time dt)
@@ -195,7 +212,6 @@ void ClientGameManager::Update(sf::Time dt)
             if (entityManager_.HasComponent(entity, static_cast<core::EntityMask>(core::ComponentType::TRANSFORM)))
             {
                 transformManager_.SetPosition(entity, rollbackManager_.GetTransformManager().GetPosition(entity));
-                transformManager_.SetScale(entity, rollbackManager_.GetTransformManager().GetScale(entity));
                 transformManager_.SetRotation(entity, rollbackManager_.GetTransformManager().GetRotation(entity));
             }
         }
@@ -205,11 +221,7 @@ void ClientGameManager::Update(sf::Time dt)
     {
         FixedUpdate();
         fixedTimer_ -= fixedPeriod;
-
     }
-
-
-
 }
 
 void ClientGameManager::End()
@@ -308,8 +320,7 @@ void ClientGameManager::Draw(sf::RenderTarget& target)
     }
     else
     {
-        // TODO change health logic to show %'s
-        /*std::string health;
+        std::string percent;
         const auto& playerManager = rollbackManager_.GetPlayerCharacterManager();
         for (PlayerNumber playerNumber = 0; playerNumber < maxPlayerNmb; playerNumber++)
         {
@@ -318,11 +329,11 @@ void ClientGameManager::Draw(sf::RenderTarget& target)
             {
                 continue;
             }
-            health += fmt::format("P{} health: {} ", playerNumber + 1, playerManager.GetComponent(playerEntity).health);
-        }*/
+            percent += fmt::format("P{}: {}%  ", playerNumber + 1, playerManager.GetComponent(playerEntity).damagePercent);
+        }
 
         textRenderer_.setFillColor(sf::Color::White);
-        textRenderer_.setString("TODO %");
+        textRenderer_.setString(percent);
         textRenderer_.setPosition(10, 10);
         textRenderer_.setCharacterSize(20);
         target.draw(textRenderer_);
@@ -351,7 +362,7 @@ void ClientGameManager::SpawnGloves(PlayerNumber playerNumber, core::Vec2f playe
 {
 	GameManager::SpawnGloves(playerNumber, playerPos,  playerRot);
 
-    bool flip = false;
+    bool flip = true;
     for (const core::Entity& entity : GetGlovesEntityFromPlayerNumber(playerNumber))
     {
         spriteManager_.AddComponent(entity);
@@ -359,12 +370,10 @@ void ClientGameManager::SpawnGloves(PlayerNumber playerNumber, core::Vec2f playe
         spriteManager_.SetOrigin(entity, sf::Vector2f(gloveTexture_.getSize()) / 2.0f);
         spriteManager_.SetColor(entity, playerColors[playerNumber]);
 
-        // Flip the glove if it's the second one
+        // Flip the glove if it's the first one
         if (flip)
         {
-            sf::Sprite sprite = spriteManager_.GetComponent(entity);
-            sprite.setScale(-1.0f, 1.0f);
-            spriteManager_.SetComponent(entity, sprite);
+            transformManager_.SetScale(entity, { -1.0f, 1.0f });
         }
 
         flip = !flip;
