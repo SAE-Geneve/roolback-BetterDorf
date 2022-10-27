@@ -5,14 +5,15 @@
 
 
 game::GloveManager::GloveManager(core::EntityManager& entityManager, PhysicsManager& physicsManager,
-	GameManager& gameManager) : ComponentManager(entityManager), gameManager_(gameManager), physicsManager_(physicsManager)
+	GameManager& gameManager) : ComponentManager(entityManager), gameManager_(gameManager),
+	physicsManager_(physicsManager)
 {
 }
 
 void game::GloveManager::FixedUpdate(const sf::Time dt)
 {
 	// Loop over each player
-	for (uint8_t playerNum = 0; playerNum < maxPlayerNmb ; playerNum++)
+	for (uint8_t playerNum = 0; playerNum < maxPlayerNmb; playerNum++)
 	{
 		const core::Entity playerEntity = gameManager_.GetEntityFromPlayerNumber(playerNum);
 		Body playerBody = physicsManager_.GetBody(playerEntity);
@@ -42,42 +43,29 @@ void game::GloveManager::FixedUpdate(const sf::Time dt)
 				{
 					if (glove.recoveryTime > 0.0f)
 					{
-						// TODO add visual effect to communicate glove is coming back
+						gloveBody.position = core::Vec2f::Lerp(glove.returningFromPos, goalPos,
+							(gloveRecoveryTime - glove.recoveryTime) / gloveRecoveryTime);
 					}
 					else
 					{
-						glove.isPunching = false;
-						glove.hasLaunched = false;
-						glove.isRecovering = false;
-
-						auto col = physicsManager_.Getcol(gloveEntity);
-						col.isTrigger = false;
-						col.enabled = true;
-						physicsManager_.SetCol(gloveEntity, col);
-
+						StartIdle(gloveEntity);
+						gloveBody = physicsManager_.GetBody(gloveEntity);
 						gloveBody.position = goalPos;
+						glove = GetComponent(gloveEntity);
 					}
 				}
 				else if (glove.punchingTime <= 0.0f)
 				{
 					if (glove.hasLaunched)
 					{
-						// Stop the glove
-						gloveBody.velocity = core::Vec2f::zero();
-
-						// Set it to recover
-						glove.isRecovering = true;
-						glove.recoveryTime = gloveRecoveryTime;
-
-						auto col = physicsManager_.Getcol(gloveEntity);
-						col.isTrigger = false;
-						col.enabled = false;
-						physicsManager_.SetCol(gloveEntity, col);
+						StartReturn(gloveEntity);
+						gloveBody = physicsManager_.GetBody(gloveEntity);
+						glove = GetComponent(gloveEntity);
 					}
 					else
 					{
 						// Launch the glove
-						gloveBody.velocity += relativeUp * punchingSpeed;
+						gloveBody.velocity = relativeUp * punchingSpeed;
 						glove.hasLaunched = true;
 
 						glove.punchingTime = punchingTime;
@@ -93,7 +81,7 @@ void game::GloveManager::FixedUpdate(const sf::Time dt)
 				if (const float toGloveLength = toGlove.GetMagnitude(); toGloveLength > gloveMaxDist)
 				{
 					gloveBody.position = playerBody.position + toGlove.GetNormalized() * gloveMaxDist;
-					toGlove = gloveBody.position -playerBody.position;
+					toGlove = gloveBody.position - playerBody.position;
 				}
 				else if (toGloveLength < gloveMinDist)
 				{
@@ -132,7 +120,7 @@ void game::GloveManager::FixedUpdate(const sf::Time dt)
 					{
 						gloveBody.position = playerBody.position + relativeUp.Rotate(bound1) * toGlove.GetMagnitude();
 					}
-					else 
+					else
 					{
 						gloveBody.position = playerBody.position + relativeUp.Rotate(bound2) * toGlove.GetMagnitude();
 					}
@@ -163,6 +151,12 @@ void game::GloveManager::StartReturn(const core::Entity gloveEntity)
 	col.enabled = false;
 	physicsManager_.SetCol(gloveEntity, col);
 
+	Body body = physicsManager_.GetBody(gloveEntity);
+	body.velocity = core::Vec2f::zero();
+	physicsManager_.SetBody(gloveEntity, body);
+
+	glove.returningFromPos = body.position;
+
 	SetComponent(gloveEntity, glove);
 }
 
@@ -178,5 +172,21 @@ void game::GloveManager::StartPunch(const core::Entity gloveEntity)
 	col.isTrigger = true;
 
 	physicsManager_.SetCol(gloveEntity, col);
+	SetComponent(gloveEntity, glove);
+}
+
+void game::GloveManager::StartIdle(core::Entity gloveEntity)
+{
+	Glove glove = GetComponent(gloveEntity);
+
+	glove.isPunching = false;
+	glove.hasLaunched = false;
+	glove.isRecovering = false;
+
+	auto col = physicsManager_.Getcol(gloveEntity);
+	col.isTrigger = false;
+	col.enabled = true;
+	physicsManager_.SetCol(gloveEntity, col);
+
 	SetComponent(gloveEntity, glove);
 }

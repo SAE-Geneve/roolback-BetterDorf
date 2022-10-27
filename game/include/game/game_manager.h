@@ -90,6 +90,7 @@ public:
     [[nodiscard]] PlayerNumber GetPlayerNumber() const { return clientPlayer_; }
     void WinGame(PlayerNumber winner) override;
     [[nodiscard]] std::uint32_t GetState() const { return state_; }
+    [[nodiscard]] core::SpriteManager& GetSpriteManager() { return spriteManager_; }
 protected:
 
     void UpdateCameraView();

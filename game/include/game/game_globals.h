@@ -46,11 +46,11 @@ constexpr float playerKnockbackScaling = 7.0f;
 constexpr float playerBaseKnockbackMod = 2.0f;
 constexpr float gloveKnockbackMod = 7.0f;
 
-constexpr float gloveMinDist = 1.15f;
+constexpr float gloveMinDist = 1.2f;
 constexpr float gloveMaxDist = 1.6f;
 constexpr float gloveIdealDist = 1.3f;
 constexpr float gloveDamage = 30.0f;
-constexpr float gloveColRadius = 0.5f;
+constexpr float gloveColRadius = 0.4f;
 /**
  * \brief Starting angle for the section where the glove is allowed to be in
  */
@@ -87,7 +87,7 @@ constexpr std::size_t maxInputNmb = 50;
  */
 constexpr float fixedPeriod = 0.02f; //50fps
 
-
+constexpr core::Color gloveOffColor(0,0,0, 155);
 constexpr std::array<core::Color, std::max(4u, maxPlayerNmb)> playerColors
 {
     core::Color::red(),

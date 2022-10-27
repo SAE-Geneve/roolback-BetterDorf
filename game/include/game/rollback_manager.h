@@ -63,6 +63,7 @@ public:
     [[nodiscard]] Frame GetCurrentFrame() const { return currentFrame_; }
     [[nodiscard]] const core::TransformManager& GetTransformManager() const { return currentTransformManager_; }
     [[nodiscard]] const PlayerCharacterManager& GetPlayerCharacterManager() const { return currentPlayerManager_; }
+    [[nodiscard]] const GloveManager& GetGloveManager() const { return currentGloveManager_; }
     [[nodiscard]] PhysicsManager& GetCurrentPhysicsManager() { return currentPhysicsManager_; }
     void SpawnPlayer(PlayerNumber playerNumber, core::Entity entity, core::Vec2f position, core::Degree rotation);
     /**

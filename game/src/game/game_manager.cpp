@@ -214,6 +214,20 @@ void ClientGameManager::Update(sf::Time dt)
                     spriteManager_.SetColor(entity, playerColors[player.playerNumber]);
                 }
             }
+        	else if (entityManager_.HasComponent(entity, static_cast<core::EntityMask>(ComponentType::GLOVE) |
+				static_cast<core::EntityMask>(core::ComponentType::SPRITE)))
+        	{
+                const auto& glove = rollbackManager_.GetGloveManager().GetComponent(entity);
+
+                if (glove.isRecovering)
+                {
+                    spriteManager_.SetColor(entity, gloveOffColor);
+                }
+                else
+                {
+                    spriteManager_.SetColor(entity, playerColors[glove.playerNumber]);
+                }
+        	}
 
             if (entityManager_.HasComponent(entity, static_cast<core::EntityMask>(core::ComponentType::TRANSFORM)))
             {
