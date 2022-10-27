@@ -9,6 +9,8 @@
 #include <memory>
 #include <chrono>
 
+#include "utils/conversion.h"
+
 namespace game
 {
 enum class PacketType : std::uint8_t
@@ -66,7 +68,7 @@ struct TypedPacket : Packet
 template<typename T, size_t N>
 sf::Packet& operator<<(sf::Packet& packet, const std::array<T, N>& t)
 {
-    for (auto& tmp : t)
+    for (const auto& tmp : t)
     {
         packet << tmp;
     }
@@ -95,7 +97,7 @@ struct JoinPacket : TypedPacket<PacketType::JOIN>
 inline sf::Packet& operator<<(sf::Packet& packet, const JoinPacket& joinPacket)
 {
     return packet << joinPacket.clientId << joinPacket.startTime;
-}
+} 
 
 inline sf::Packet& operator>>(sf::Packet& packet, JoinPacket& joinPacket)
 {
@@ -232,63 +234,6 @@ inline sf::Packet& operator>>(sf::Packet& packet, PingPacket& pingPacket)
     return packet >> pingPacket.time >> pingPacket.clientId;
 }
 
-inline void GeneratePacket(sf::Packet& packet, Packet& sendingPacket)
-{
-    packet << sendingPacket;
-    switch (sendingPacket.packetType)
-    {
-    case PacketType::JOIN:
-    {
-        const auto& packetTmp = static_cast<JoinPacket&>(sendingPacket);
-        packet << packetTmp;
-        break;
-    }
-    case PacketType::SPAWN_PLAYER:
-    {
-        const auto& packetTmp = static_cast<SpawnPlayerPacket&>(sendingPacket);
-        packet << packetTmp;
-        break;
-    }
-    case PacketType::INPUT:
-    {
-        const auto& packetTmp = static_cast<PlayerInputPacket&>(sendingPacket);
-        packet << packetTmp;
-        break;
-    }
-    case PacketType::VALIDATE_STATE:
-    {
-        const auto& packetTmp = static_cast<ValidateFramePacket&>(sendingPacket);
-        packet << packetTmp;
-        break;
-    }
-    case PacketType::START_GAME:
-    {
-        break;
-    }
-    case PacketType::JOIN_ACK:
-    {
-        const auto& packetTmp = static_cast<JoinAckPacket&>(sendingPacket);
-        packet << packetTmp;
-        break;
-    }
-    case PacketType::WIN_GAME:
-    {
-        const auto& packetTmp = static_cast<WinGamePacket&>(sendingPacket);
-        packet << packetTmp;
-        break;
-    }
-    case PacketType::PING:
-    {
-        const auto& packetTmp = static_cast<PingPacket&>(sendingPacket);
-        packet << packetTmp;
-        break;
-    }
-
-    default:
-        break;
-    }
-}
-
 inline std::unique_ptr<Packet> GenerateReceivedPacket(sf::Packet& packet)
 {
     Packet packetTmp;
@@ -314,6 +259,7 @@ inline std::unique_ptr<Packet> GenerateReceivedPacket(sf::Packet& packet)
         auto playerInputPacket = std::make_unique<PlayerInputPacket>();
         playerInputPacket->packetType = packetTmp.packetType;
         packet >> *playerInputPacket;
+
         return playerInputPacket;
     }
     case PacketType::VALIDATE_STATE:
@@ -354,6 +300,65 @@ inline std::unique_ptr<Packet> GenerateReceivedPacket(sf::Packet& packet)
     }
     return nullptr;
 }
+
+inline void GeneratePacket(sf::Packet& packet, Packet& sendingPacket)
+{
+    packet << sendingPacket;
+    switch (sendingPacket.packetType)
+    {
+    case PacketType::JOIN:
+    {
+        const auto& packetTmp = static_cast<JoinPacket&>(sendingPacket);
+        packet << packetTmp;
+        break;
+    }
+    case PacketType::SPAWN_PLAYER:
+    {
+        const auto& packetTmp = static_cast<SpawnPlayerPacket&>(sendingPacket);
+        packet << packetTmp;
+        break;
+    }
+    case PacketType::INPUT:
+    {
+        const auto& packetTmp = static_cast<PlayerInputPacket&>(sendingPacket);
+        packet << packetTmp;
+
+        break;
+    }
+    case PacketType::VALIDATE_STATE:
+    {
+        const auto& packetTmp = static_cast<ValidateFramePacket&>(sendingPacket);
+        packet << packetTmp;
+        break;
+    }
+    case PacketType::START_GAME:
+    {
+        break;
+    }
+    case PacketType::JOIN_ACK:
+    {
+        const auto& packetTmp = static_cast<JoinAckPacket&>(sendingPacket);
+        packet << packetTmp;
+        break;
+    }
+    case PacketType::WIN_GAME:
+    {
+        const auto& packetTmp = static_cast<WinGamePacket&>(sendingPacket);
+        packet << packetTmp;
+        break;
+    }
+    case PacketType::PING:
+    {
+        const auto& packetTmp = static_cast<PingPacket&>(sendingPacket);
+        packet << packetTmp;
+        break;
+    }
+
+    default:
+        break;
+    }
+}
+
 
 /**
  * \brief PacketSenderInterface is a interface for any Server or Client who wants to send and receive packets

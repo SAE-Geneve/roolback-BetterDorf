@@ -68,7 +68,6 @@ void Client::ReceivePacket(const Packet* packet)
                 }
                 if (inputs[index] != playerInputPacket->inputs[i])
                 {
-                    core::LogDebug(fmt::format("{} : {}", inputFrame, currentFrame));
                     core::LogWarning("INPUT DOESN'T MATCH");
                     //gpr_assert(false, "Inputs coming back from server are not coherent!!!");
                 }

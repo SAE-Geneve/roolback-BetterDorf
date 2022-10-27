@@ -99,12 +99,12 @@ void RollbackManager::SetPlayerInput(PlayerNumber playerNumber, PlayerInput play
     {
         StartNewFrame(inputFrame);
     }
-    inputs_[playerNumber][currentFrame_ - inputFrame] = playerInput;
+    inputs_[playerNumber][currentInputFrame_ - inputFrame] = playerInput;
     if (lastReceivedFrame_[playerNumber] < inputFrame)
     {
         lastReceivedFrame_[playerNumber] = inputFrame;
         //Repeat the same inputs until currentFrame
-        for (size_t i = 0; i < currentFrame_ - inputFrame; i++)
+        for (size_t i = 0; i < currentInputFrame_ - inputFrame; i++)
         {
             inputs_[playerNumber][i] = playerInput;
         }
@@ -117,9 +117,9 @@ void RollbackManager::StartNewFrame(Frame newFrame)
 #ifdef TRACY_ENABLE
     ZoneScoped;
 #endif
-    if (currentFrame_ > newFrame)
+    if (currentInputFrame_ > newFrame)
         return;
-    const auto delta = newFrame - currentFrame_;
+    const auto delta = newFrame - currentInputFrame_;
     if (delta == 0)
     {
         return;
@@ -136,7 +136,7 @@ void RollbackManager::StartNewFrame(Frame newFrame)
             inputs[i] = inputs[delta];
         }
     }
-    currentFrame_ = newFrame;
+    currentInputFrame_ = newFrame;
 }
 
 void RollbackManager::ValidateFrame(Frame newValidateFrame)
@@ -356,9 +356,9 @@ void RollbackManager::SpawnGlove(core::Entity playerEntity, core::Entity entity,
 
 PlayerInput RollbackManager::GetInputAtFrame(PlayerNumber playerNumber, Frame frame) const
 {
-    gpr_assert(currentFrame_ - frame < inputs_[playerNumber].size(),
+    gpr_assert(currentInputFrame_ - frame < inputs_[playerNumber].size(),
         "Trying to get input too far in the past");
-    return inputs_[playerNumber][currentFrame_ - frame];
+    return inputs_[playerNumber][currentInputFrame_ - frame];
 }
 
 void RollbackManager::OnTrigger(core::Entity entity1, core::Entity entity2)

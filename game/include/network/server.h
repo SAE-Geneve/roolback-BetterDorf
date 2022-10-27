@@ -14,6 +14,7 @@ namespace game
 class Server : public PacketSenderInterface, public core::SystemInterface
 {
 protected:
+    Server() : gameManager_(){}
 
     virtual void SpawnNewPlayer(ClientId clientId, PlayerNumber playerNumber) = 0;
     /**

@@ -133,6 +133,7 @@ private:
      * \brief currentFrame_ is the current frame on the client side.
      */
     Frame currentFrame_ = 0;
+    Frame currentInputFrame_ = 0;
     /**
      * \brief testedFrame_ is the current simulated frame used mainly for entity creation and collision.
      */
