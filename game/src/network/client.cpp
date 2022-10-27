@@ -58,6 +58,7 @@ void Client::ReceivePacket(const Packet* packet)
             //Verify the inputs coming back from the server
             const auto& inputs = gameManager_.GetRollbackManager().GetInputs(playerNumber);
             const auto currentFrame = gameManager_.GetRollbackManager().GetCurrentFrame();
+            
             for (size_t i = 0; i < playerInputPacket->inputs.size(); i++)
             {
                 const auto index = currentFrame - inputFrame + i;
@@ -67,6 +68,7 @@ void Client::ReceivePacket(const Packet* packet)
                 }
                 if (inputs[index] != playerInputPacket->inputs[i])
                 {
+                    core::LogDebug(fmt::format("{} : {}", inputFrame, currentFrame));
                     core::LogWarning("INPUT DOESN'T MATCH");
                     //gpr_assert(false, "Inputs coming back from server are not coherent!!!");
                 }

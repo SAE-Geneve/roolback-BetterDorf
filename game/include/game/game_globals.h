@@ -63,9 +63,9 @@ constexpr core::Degree gloveIdealAngle(40.0f);
 
 constexpr float punchWindUptime = 0.05f;
 constexpr float punchingTime = 0.18f;
-constexpr float gloveRecoveryTime = 0.35f;
+constexpr float gloveRecoveryTime = 0.85f;
 constexpr float punchingSpeed = 10.5f;
-constexpr float gloveHoverSpeed = 1.0f;
+constexpr float gloveHoverSpeed = 1.5f;
 constexpr float gloveDistSpeedBoost = 0.5f;
 
 constexpr float battleStageHeight = 15.0f;

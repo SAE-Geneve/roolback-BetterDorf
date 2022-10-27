@@ -19,8 +19,8 @@ namespace game
 {
 enum class BodyType
 {
-    DYNAMIC,
-    STATIC
+	DYNAMIC,
+	STATIC
 };
 
 /**
@@ -28,12 +28,12 @@ enum class BodyType
  */
 struct Body
 {
-    float mass = 1.0f;
-    core::Vec2f position = core::Vec2f::zero();
-    core::Vec2f velocity = core::Vec2f::zero();
-    core::Degree angularVelocity = core::Degree(0.0f);
-    core::Degree rotation = core::Degree(0.0f);
-    BodyType bodyType = BodyType::DYNAMIC;
+	float mass = 1.0f;
+	core::Vec2f position = core::Vec2f::zero();
+	core::Vec2f velocity = core::Vec2f::zero();
+	core::Degree angularVelocity = core::Degree(0.0f);
+	core::Degree rotation = core::Degree(0.0f);
+	BodyType bodyType = BodyType::DYNAMIC;
 };
 
 /**
@@ -41,9 +41,14 @@ struct Body
  */
 struct Circle
 {
-    float radius = 0.0f;
-    bool isTrigger = false;
-    bool enabled = true;
+	constexpr Circle() = default;
+
+	explicit constexpr Circle(const float radius)
+		: radius(radius) {}
+
+	float radius = 0.0f;
+	bool isTrigger = false;
+	bool enabled = true;
 };
 
 /**
@@ -53,8 +58,8 @@ struct Circle
 class OnTriggerInterface
 {
 public:
-    virtual ~OnTriggerInterface() = default;
-    virtual void OnTrigger(core::Entity entity1, core::Entity entity2) = 0;
+	virtual ~OnTriggerInterface() = default;
+	virtual void OnTrigger(core::Entity entity1, core::Entity entity2) = 0;
 };
 
 /**
@@ -63,7 +68,7 @@ public:
 class BodyManager : public core::ComponentManager<Body, static_cast<core::EntityMask>(core::ComponentType::BODY2D)>
 {
 public:
-    using ComponentManager::ComponentManager;
+	using ComponentManager::ComponentManager;
 };
 
 /**
@@ -72,7 +77,7 @@ public:
 class CircleManager : public core::ComponentManager<Circle, static_cast<core::EntityMask>(core::ComponentType::CIRCLE_COLLIDER2D)>
 {
 public:
-    using ComponentManager::ComponentManager;
+	using ComponentManager::ComponentManager;
 };
 
 /**
@@ -82,32 +87,32 @@ public:
 class PhysicsManager : public core::DrawInterface
 {
 public:
-    explicit PhysicsManager(core::EntityManager& entityManager);
-    void FixedUpdate(sf::Time dt);
-    [[nodiscard]] const Body& GetBody(core::Entity entity) const;
-    void SetBody(core::Entity entity, const Body& body);
-    void AddBody(core::Entity entity);
+	explicit PhysicsManager(core::EntityManager& entityManager);
+	void FixedUpdate(sf::Time dt);
+	[[nodiscard]] const Body& GetBody(core::Entity entity) const;
+	void SetBody(core::Entity entity, const Body& body);
+	void AddBody(core::Entity entity);
 
-    void AddCol(core::Entity entity);
-    void SetCol(core::Entity entity, const Circle& col);
-    [[nodiscard]] const Circle& Getcol(core::Entity entity) const;
-    /**
-     * \brief RegisterTriggerListener is a method that stores an OnTriggerInterface in the PhysicsManager that will call the OnTrigger method in case of a trigger.
-     * \param onTriggerInterface is the OnTriggerInterface to be called when a trigger occurs.
-     */
-    void RegisterTriggerListener(OnTriggerInterface& onTriggerInterface);
-    void CopyAllComponents(const PhysicsManager& physicsManager);
-    void Draw(sf::RenderTarget& renderTarget) override;
-    void SetCenter(sf::Vector2f center) { center_ = center; }
-    void SetWindowSize(sf::Vector2f newWindowSize) { windowSize_ = newWindowSize; }
+	void AddCol(core::Entity entity);
+	void SetCol(core::Entity entity, const Circle& col);
+	[[nodiscard]] const Circle& Getcol(core::Entity entity) const;
+	/**
+	 * \brief RegisterTriggerListener is a method that stores an OnTriggerInterface in the PhysicsManager that will call the OnTrigger method in case of a trigger.
+	 * \param onTriggerInterface is the OnTriggerInterface to be called when a trigger occurs.
+	 */
+	void RegisterTriggerListener(OnTriggerInterface& onTriggerInterface);
+	void CopyAllComponents(const PhysicsManager& physicsManager);
+	void Draw(sf::RenderTarget& renderTarget) override;
+	void SetCenter(sf::Vector2f center) { center_ = center; }
+	void SetWindowSize(sf::Vector2f newWindowSize) { windowSize_ = newWindowSize; }
 private:
-    core::EntityManager& entityManager_;
-    BodyManager bodyManager_;
-    CircleManager colManager_;
-    core::Action<core::Entity, core::Entity> onTriggerAction_;
-    //Used for debug
-    sf::Vector2f center_{};
-    sf::Vector2f windowSize_{};
+	core::EntityManager& entityManager_;
+	BodyManager bodyManager_;
+	CircleManager colManager_;
+	core::Action<core::Entity, core::Entity> onTriggerAction_;
+	//Used for debug
+	sf::Vector2f center_{};
+	sf::Vector2f windowSize_{};
 };
 
 }
