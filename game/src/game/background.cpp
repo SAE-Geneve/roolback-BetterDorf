@@ -10,18 +10,23 @@ void game::Background::Init(sf::Vector2u windowSize)
     {
         core::LogError("Could not load stage sprite");
     }
-    if (!tilesTxt_.loadFromFile("data/sprites/Spike.png"))
+    if (!tilesTxts_[0].loadFromFile("data/sprites/Spike.png") ||
+        !tilesTxts_[1].loadFromFile("data/sprites/SpikeSplatter.png") ||
+        !tilesTxts_[2].loadFromFile("data/sprites/SpikeMin.png") ||
+        !tilesTxts_[3].loadFromFile("data/sprites/Spike2.png") ||
+        !tilesTxts_[4].loadFromFile("data/sprites/Spike3.png"))
     {
         core::LogError("Could not load tile sprite");
     }
 
     // Make the spike tiles
-    for (unsigned x = 0; x < windowSize.x; x += tilesTxt_.getSize().x)
+    sf::Vector2u tileSize = tilesTxts_[0].getSize();
+    for (unsigned x = 0; x < windowSize.x; x += tileSize.x)
     {
-        for (unsigned y = 0; y < windowSize.y; y += tilesTxt_.getSize().y)
+        for (unsigned y = 0; y < windowSize.y; y += tileSize.y)
         {
             sf::Sprite tile;
-            tile.setTexture(tilesTxt_);
+            tile.setTexture(tilesTxts_[std::rand() % tilesNum_]);
             tile.setPosition(x, y);
 
             tiles_.emplace_back(tile);

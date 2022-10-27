@@ -1,5 +1,5 @@
 #pragma once
-#include <vector>
+#include <array>
 #include <SFML/Graphics/RenderTarget.hpp>
 #include <SFML/Graphics/Texture.hpp>
 #include <SFML/Graphics/Sprite.hpp>
@@ -21,6 +21,7 @@ private:
     sf::Sprite stage_;
 
     sf::Texture stageTxt_;
-    sf::Texture tilesTxt_;
+	static constexpr int tilesNum_ = 5;
+	std::array<sf::Texture, tilesNum_> tilesTxts_;
 };
 }
