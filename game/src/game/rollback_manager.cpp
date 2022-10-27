@@ -70,7 +70,7 @@ void RollbackManager::SimulateToCurrentFrame()
                 core::LogWarning(fmt::format("Invalid Entity in {}:line {}", __FILE__, __LINE__));
                 continue;
             }
-            auto playerCharacter = currentPlayerManager_.GetComponent(playerEntity);
+            PlayerCharacter playerCharacter = currentPlayerManager_.GetComponent(playerEntity);
             playerCharacter.input = playerInput;
             currentPlayerManager_.SetComponent(playerEntity, playerCharacter);
         }
@@ -189,7 +189,7 @@ void RollbackManager::ValidateFrame(Frame newValidateFrame)
         {
             const auto playerInput = GetInputAtFrame(playerNumber, frame);
             const auto playerEntity = gameManager_.GetEntityFromPlayerNumber(playerNumber);
-            auto playerCharacter = currentPlayerManager_.GetComponent(playerEntity);
+            PlayerCharacter playerCharacter = currentPlayerManager_.GetComponent(playerEntity);
             playerCharacter.input = playerInput;
             currentPlayerManager_.SetComponent(playerEntity, playerCharacter);
         }
@@ -418,7 +418,7 @@ void RollbackManager::ManagePGCollision(auto playerEntity, auto gloveEntity)
     glove.isRecovering = true;
     glove.recoveryTime = gloveRecoveryTime;
 
-    auto col = currentPhysicsManager_.Getcol(gloveEntity);
+    Circle col = currentPhysicsManager_.Getcol(gloveEntity);
     col.isTrigger = false;
     col.enabled = false;
     currentPhysicsManager_.SetCol(gloveEntity, col);
@@ -438,19 +438,13 @@ void RollbackManager::ManageGGCollision(auto firstGloveEntity, auto secondGloveE
     Glove glove1 = currentGloveManager_.GetComponent(firstGloveEntity);
     Glove glove2 = currentGloveManager_.GetComponent(secondGloveEntity);
 
-    auto glove1Body = currentPhysicsManager_.GetBody(firstGloveEntity);
-    auto glove2Body = currentPhysicsManager_.GetBody(secondGloveEntity);
+    Body glove1Body = currentPhysicsManager_.GetBody(firstGloveEntity);
+    Body glove2Body = currentPhysicsManager_.GetBody(secondGloveEntity);
 
     const bool bothPunch = glove1.isPunching && glove2.isPunching && glove1.hasLaunched && glove2.hasLaunched;
     if (glove1.isPunching)
 	{
-        glove1.isRecovering = true;
-        glove1.recoveryTime = gloveRecoveryTime;
-
-        auto col = currentPhysicsManager_.Getcol(firstGloveEntity);
-        col.isTrigger = false;
-        col.enabled = false;
-        currentPhysicsManager_.SetCol(firstGloveEntity, col);
+        currentGloveManager_.StartReturn(firstGloveEntity);
 
         if (!bothPunch)
         {
@@ -460,14 +454,7 @@ void RollbackManager::ManageGGCollision(auto firstGloveEntity, auto secondGloveE
     }
     if (glove2.isPunching)
     {
-        // TODO refactor and move this into a method in GloveManager
-        glove2.isRecovering = true;
-        glove2.recoveryTime = gloveRecoveryTime;
-
-        auto col = currentPhysicsManager_.Getcol(secondGloveEntity);
-        col.isTrigger = false;
-        col.enabled = false;
-        currentPhysicsManager_.SetCol(secondGloveEntity, col);
+        currentGloveManager_.StartReturn(secondGloveEntity);
 
         if (!bothPunch)
         {

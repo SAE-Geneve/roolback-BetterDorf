@@ -150,3 +150,33 @@ void game::GloveManager::FixedUpdate(const sf::Time dt)
 		}
 	}
 }
+
+void game::GloveManager::StartReturn(const core::Entity gloveEntity)
+{
+	Glove glove = GetComponent(gloveEntity);
+
+	glove.isRecovering = true;
+	glove.recoveryTime = gloveRecoveryTime;
+
+	Circle col = physicsManager_.Getcol(gloveEntity);
+	col.isTrigger = false;
+	col.enabled = false;
+	physicsManager_.SetCol(gloveEntity, col);
+
+	SetComponent(gloveEntity, glove);
+}
+
+void game::GloveManager::StartPunch(const core::Entity gloveEntity)
+{
+	Glove glove = GetComponent(gloveEntity);
+
+	glove.isPunching = true;
+	glove.punchingTime = punchWindUptime;
+
+	// Switch collider to trigger
+	auto col = physicsManager_.Getcol(gloveEntity);
+	col.isTrigger = true;
+
+	physicsManager_.SetCol(gloveEntity, col);
+	SetComponent(gloveEntity, glove);
+}

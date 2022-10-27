@@ -54,7 +54,7 @@ void GameManager::SpawnGloves(PlayerNumber playerNumber, core::Vec2f playerPos, 
     for (int gloveNum = 0; gloveNum < 2; gloveNum++)
     {
         const auto entity = entityManager_.CreateEntity();
-        gloveEntityMap_[playerNumber * 2 + gloveNum] = entity;
+        gloveEntityMap_[static_cast<long long>(playerNumber) * 2 + gloveNum] = entity;
 
         // Calculate position and rotation
         // Positions are swapped if glove is on the right
@@ -80,8 +80,8 @@ core::Entity GameManager::GetEntityFromPlayerNumber(PlayerNumber playerNumber) c
 std::array<core::Entity, 2> GameManager::GetGlovesEntityFromPlayerNumber(PlayerNumber playerNumber) const
 {
     std::array<core::Entity, 2> gloves{};
-    gloves[0] = gloveEntityMap_[playerNumber * 2];
-    gloves[1] = gloveEntityMap_[playerNumber * 2 + 1];
+    gloves[0] = gloveEntityMap_[static_cast<long long>(playerNumber) * 2];
+    gloves[1] = gloveEntityMap_[static_cast<long long>(playerNumber) * 2 + 1];
     return gloves;
 }
 

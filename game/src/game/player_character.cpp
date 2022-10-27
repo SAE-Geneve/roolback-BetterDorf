@@ -90,21 +90,15 @@ void PlayerCharacterManager::FixedUpdate(sf::Time dt)
             gloveBody.velocity = gloveBody.velocity.Rotate(-rotation);
             gloveBody.velocity += playerBody.velocity;
 
-            // Handle punching input
-            if (punch[i])
-            {
-                glove.isPunching = true;
-                glove.punchingTime = punchWindUptime;
-
-                // Switch collider to trigger
-                auto col = physicsManager_.Getcol(gloveEntity);
-                col.isTrigger = true;
-
-                physicsManager_.SetCol(gloveEntity, col);
-            }
             gloveManager_.SetComponent(gloveEntity, glove);
 
             physicsManager_.SetBody(gloveEntity, gloveBody);
+
+            // Handle punching input
+            if (punch[i])
+            {
+                gloveManager_.StartPunch(gloveEntity);
+            }
         }
 
         if (playerCharacter.invincibilityTime > 0.0f)
