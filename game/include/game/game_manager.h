@@ -11,6 +11,7 @@
 #include "engine/entity.h"
 #include "graphics/graphics.h"
 #include "graphics/sprite.h"
+#include "game/background.h"
 #include "engine/system.h"
 #include "engine/transform.h"
 #include "network/packet_type.h"
@@ -105,9 +106,10 @@ protected:
     unsigned long long startingTime_ = 0;
     std::uint32_t state_ = 0;
 
+    Background background_;
+
     sf::Texture playerTexture_;
     sf::Texture gloveTexture_;
-    sf::Texture stageTexture_;
     sf::Font font_;
 
     sf::Text textRenderer_;

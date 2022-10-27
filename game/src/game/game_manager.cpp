@@ -161,10 +161,6 @@ void ClientGameManager::Begin()
     {
         core::LogError("Could not load glove's sprite");
     }
-    if (!stageTexture_.loadFromFile("data/sprites/Stage.png"))
-    {
-        core::LogError("Could not load stage sprite");
-    }
     //load fonts
     if (!font_.loadFromFile("data/fonts/8-bit-hud.ttf"))
     {
@@ -172,18 +168,7 @@ void ClientGameManager::Begin()
     }
     textRenderer_.setFont(font_);
 
-    // TODO move stage and background elements to their own class
-    auto stageEnt = entityManager_.CreateEntity();
-    spriteManager_.AddComponent(stageEnt);
-    spriteManager_.SetTexture(stageEnt, stageTexture_);
-    spriteManager_.SetOrigin(stageEnt, static_cast<sf::Vector2f>(stageTexture_.getSize()) / 2.0f);
-    auto& sprite = spriteManager_.GetComponent(stageEnt);
-    auto size = stageTexture_.getSize();
-    spriteManager_.SetComponent(stageEnt, sprite);
-    transformManager_.AddComponent(stageEnt);
-    transformManager_.SetScale(stageEnt, { battleStagewidth / static_cast<float>(size.x) * core::pixelPerMeter,
-        battleStageHeight / static_cast<float>(size.y) * core::pixelPerMeter } );
-    transformManager_.SetPosition(stageEnt, core::Vec2f::zero());
+    background_.Init(windowSize_);
 }
 
 void ClientGameManager::Update(sf::Time dt)
@@ -271,6 +256,7 @@ void ClientGameManager::Draw(sf::RenderTarget& target)
     UpdateCameraView();
     target.setView(cameraView_);
 
+    background_.Draw(target);
     spriteManager_.Draw(target);
 
     if(drawPhysics_)
