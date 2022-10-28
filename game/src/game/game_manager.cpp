@@ -413,8 +413,16 @@ core::Entity ClientGameManager::SpawnEffect(const EffectType type, const core::V
 {
 	const auto entity = GameManager::SpawnEffect(type, pos);
 
-    // TODO make this modular
-    animationManager_.SetupComponent(entity, animationManager_.hitEffect_);
+	switch (type)
+	{
+	case EffectType::HIT:
+        animationManager_.SetupComponent(entity, animationManager_.hitEffect_);
+		break;
+	case EffectType::HIT_BIG:
+        animationManager_.SetupComponent(entity, animationManager_.bigHitEffect_);
+        break;
+    default: break;
+	}
 
     return entity;
 }

@@ -47,6 +47,7 @@ public:
 
     // TODO make this private and pass animations with enums
     Animation hitEffect_;
+    Animation bigHitEffect_;
 
 private:
     core::SpriteManager& spriteManager_;

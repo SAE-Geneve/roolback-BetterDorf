@@ -38,6 +38,10 @@ void AnimationManager::Init()
 	{
 		core::LogError("Failed to load hitEffect texture");
 	}
+	if (!bigHitEffect_.animTexture.loadFromFile("data/sprites/HitEffectBig.png"))
+	{
+		core::LogError("Failed to load bigHitEffect texture");
+	}
 }
 
 void AnimationManager::Update(const sf::Time dt)

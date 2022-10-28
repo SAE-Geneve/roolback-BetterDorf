@@ -446,8 +446,11 @@ void RollbackManager::ManagePGCollision(auto playerEntity, auto gloveEntity)
 	currentPlayerManager_.SetComponent(playerEntity, player);
 	currentGloveManager_.SetComponent(gloveEntity, glove);
 
-	HandlePunchCollision(currentPhysicsManager_.GetBody(gloveEntity), gloveEntity,
-		currentPhysicsManager_.GetBody(playerEntity), playerEntity, knockbackMod);
+	auto& gloveBody = currentPhysicsManager_.GetBody(gloveEntity);
+	auto& playerBody = currentPhysicsManager_.GetBody(playerEntity);
+	HandlePunchCollision(gloveBody, gloveEntity, playerBody, playerEntity, knockbackMod);
+
+	gameManager_.SpawnEffect(EffectType::HIT_BIG, (gloveBody.position + playerBody.position) / 2.0f);
 }
 
 void RollbackManager::ManageGGCollision(auto firstGloveEntity, auto secondGloveEntity)
