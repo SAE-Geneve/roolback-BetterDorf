@@ -8,6 +8,7 @@
 
 #include "game_globals.h"
 #include "rollback_manager.h"
+#include "animation_manager.h"
 #include "engine/entity.h"
 #include "graphics/graphics.h"
 #include "graphics/sprite.h"
@@ -30,6 +31,8 @@ public:
     virtual ~GameManager() = default;
     virtual void SpawnPlayer(PlayerNumber playerNumber, core::Vec2f position, core::Degree rotation);
     virtual void SpawnGloves(PlayerNumber playerNumber, core::Vec2f playerPos, core::Degree playerRot);
+    virtual core::Entity SpawnEffect(EffectType type, core::Vec2f pos);
+    void DestroyEffect(core::Entity entity);
     [[nodiscard]] core::Entity GetEntityFromPlayerNumber(PlayerNumber playerNumber) const;
     [[nodiscard]] std::array<core::Entity, 2> GetGlovesEntityFromPlayerNumber(PlayerNumber playerNumber) const;
     [[nodiscard]] Frame GetCurrentFrame() const { return currentFrame_; }
@@ -44,13 +47,12 @@ public:
     [[nodiscard]] PlayerNumber CheckWinner();
     virtual void WinGame(PlayerNumber winner);
 
-
 protected:
     core::EntityManager entityManager_;
     core::TransformManager transformManager_;
     RollbackManager rollbackManager_;
-    std::array<core::Entity, maxPlayerNmb> playerEntityMap_{};
-    std::array<core::Entity, 2 * maxPlayerNmb> gloveEntityMap_{};
+    std::array<core::Entity, MAX_PLAYER_NMB> playerEntityMap_{};
+    std::array<core::Entity, 2 * MAX_PLAYER_NMB> gloveEntityMap_{};
     Frame currentFrame_ = 0;
     PlayerNumber winner_ = INVALID_PLAYER;
 };
@@ -84,10 +86,11 @@ public:
      */
     void SpawnPlayer(PlayerNumber playerNumber, core::Vec2f position, core::Degree rotation) override;
     void SpawnGloves(PlayerNumber playerNumber, core::Vec2f playerPos, core::Degree playerRot) override;
+    core::Entity SpawnEffect(EffectType type, core::Vec2f pos) override;
     void FixedUpdate();
     void SetPlayerInput(PlayerNumber playerNumber, PlayerInput playerInput, std::uint32_t inputFrame) override;
     void DrawImGui() override;
-    void ConfirmValidateFrame(Frame newValidateFrame, const std::array<PhysicsState, maxPlayerNmb>& physicsStates);
+    void ConfirmValidateFrame(Frame newValidateFrame, const std::array<PhysicsState, MAX_PLAYER_NMB>& physicsStates);
     [[nodiscard]] PlayerNumber GetPlayerNumber() const { return clientPlayer_; }
     void WinGame(PlayerNumber winner) override;
     [[nodiscard]] std::uint32_t GetState() const { return state_; }
@@ -102,6 +105,7 @@ protected:
     sf::View cameraView_;
     PlayerNumber clientPlayer_ = INVALID_PLAYER;
     core::SpriteManager spriteManager_;
+    AnimationManager animationManager_;
     float fixedTimer_ = 0.0f;
     unsigned long long startingTime_ = 0;
     std::uint32_t state_ = 0;

@@ -13,7 +13,7 @@ game::GloveManager::GloveManager(core::EntityManager& entityManager, PhysicsMana
 void game::GloveManager::FixedUpdate(const sf::Time dt)
 {
 	// Loop over each player
-	for (uint8_t playerNum = 0; playerNum < maxPlayerNmb; playerNum++)
+	for (uint8_t playerNum = 0; playerNum < MAX_PLAYER_NMB; playerNum++)
 	{
 		const core::Entity playerEntity = gameManager_.GetEntityFromPlayerNumber(playerNum);
 		Body playerBody = physicsManager_.GetBody(playerEntity);
@@ -26,7 +26,7 @@ void game::GloveManager::FixedUpdate(const sf::Time dt)
 
 			core::Vec2f relativeUp = core::Vec2f::up().Rotate(-playerBody.rotation);
 			// Get the absolute point where the glove should try to be
-			const core::Vec2f goalPos = playerBody.position + (relativeUp * gloveIdealDist).Rotate(gloveIdealAngle * glove.sign);
+			const core::Vec2f goalPos = playerBody.position + (relativeUp * GLOVE_IDEAL_DIST).Rotate(GLOVE_IDEAL_ANGLE * glove.sign);
 
 			if (glove.punchingTime >= 0.0f)
 			{
@@ -44,7 +44,7 @@ void game::GloveManager::FixedUpdate(const sf::Time dt)
 					if (glove.recoveryTime > 0.0f)
 					{
 						gloveBody.position = core::Vec2f::Lerp(glove.returningFromPos, goalPos,
-							(gloveRecoveryTime - glove.recoveryTime) / gloveRecoveryTime);
+							(GLOVE_RECOVERY_TIME - glove.recoveryTime) / GLOVE_RECOVERY_TIME);
 					}
 					else
 					{
@@ -65,10 +65,10 @@ void game::GloveManager::FixedUpdate(const sf::Time dt)
 					else
 					{
 						// Launch the glove
-						gloveBody.velocity = relativeUp * punchingSpeed;
+						gloveBody.velocity = relativeUp * PUNCHING_SPEED;
 						glove.hasLaunched = true;
 
-						glove.punchingTime = punchingTime;
+						glove.punchingTime = PUNCHING_TIME;
 					}
 				}
 			}
@@ -78,14 +78,14 @@ void game::GloveManager::FixedUpdate(const sf::Time dt)
 				core::Vec2f toGlove = gloveBody.position - playerBody.position;
 
 				// Project the glove against the ring formed by the min and max circles
-				if (const float toGloveLength = toGlove.GetMagnitude(); toGloveLength > gloveMaxDist)
+				if (const float toGloveLength = toGlove.GetMagnitude(); toGloveLength > GLOVE_MAX_DIST)
 				{
-					gloveBody.position = playerBody.position + toGlove.GetNormalized() * gloveMaxDist;
+					gloveBody.position = playerBody.position + toGlove.GetNormalized() * GLOVE_MAX_DIST;
 					toGlove = gloveBody.position - playerBody.position;
 				}
-				else if (toGloveLength < gloveMinDist)
+				else if (toGloveLength < GLOVE_MIN_DIST)
 				{
-					gloveBody.position = playerBody.position + toGlove.GetNormalized() * gloveMinDist;
+					gloveBody.position = playerBody.position + toGlove.GetNormalized() * GLOVE_MIN_DIST;
 					toGlove = gloveBody.position - playerBody.position;
 				}
 
@@ -95,8 +95,8 @@ void game::GloveManager::FixedUpdate(const sf::Time dt)
 					- core::Atan2(relativeUp.y, relativeUp.x));
 
 				// Set the correct bounds for the glove
-				const core::Degree bound1 = core::GetPosAngle(glove.sign >= 1.0f ? gloveAngle1 : gloveAngle2 * glove.sign);
-				const core::Degree bound2 = core::GetPosAngle(glove.sign >= 1.0f ? gloveAngle2 : gloveAngle1 * glove.sign);
+				const core::Degree bound1 = core::GetPosAngle(glove.sign >= 1.0f ? GLOVE_ANGLE_1 : GLOVE_ANGLE_2 * glove.sign);
+				const core::Degree bound2 = core::GetPosAngle(glove.sign >= 1.0f ? GLOVE_ANGLE_2 : GLOVE_ANGLE_1 * glove.sign);
 
 				// Check if outstide sector
 				if (core::GetPosAngle(bound2 - bound1).value()
@@ -129,7 +129,7 @@ void game::GloveManager::FixedUpdate(const sf::Time dt)
 				// Apply force to get to desired point using seeking behaviour
 				const auto toPoint = goalPos - gloveBody.position;
 				const auto toVelocity = toPoint + playerBody.velocity - gloveBody.velocity;
-				gloveBody.velocity += toVelocity * gloveHoverSpeed * toPoint.GetMagnitude() / gloveDistSpeedBoost * dt.asSeconds();
+				gloveBody.velocity += toVelocity * GLOVE_HOVER_SPEED * toPoint.GetMagnitude() / GLOVE_DIST_SPEED_BOOST * dt.asSeconds();
 			}
 
 			// Apply the component changes
@@ -144,7 +144,7 @@ void game::GloveManager::StartReturn(const core::Entity gloveEntity)
 	Glove glove = GetComponent(gloveEntity);
 
 	glove.isRecovering = true;
-	glove.recoveryTime = gloveRecoveryTime;
+	glove.recoveryTime = GLOVE_RECOVERY_TIME;
 
 	Circle col = physicsManager_.Getcol(gloveEntity);
 	col.isTrigger = false;
@@ -165,7 +165,7 @@ void game::GloveManager::StartPunch(const core::Entity gloveEntity)
 	Glove glove = GetComponent(gloveEntity);
 
 	glove.isPunching = true;
-	glove.punchingTime = punchWindUptime;
+	glove.punchingTime = PUNCH_WINDUP_TIME;
 
 	// Switch collider to trigger
 	auto col = physicsManager_.Getcol(gloveEntity);

@@ -17,7 +17,7 @@ void NetworkServer::SendReliablePacket(
 {
     core::LogDebug(fmt::format("[Server] Sending TCP packet: {}",
         std::to_string(static_cast<int>(packet->packetType))));
-    for (PlayerNumber playerNumber = 0; playerNumber < maxPlayerNmb;
+    for (PlayerNumber playerNumber = 0; playerNumber < MAX_PLAYER_NMB;
         playerNumber++)
     {
         sf::Packet sendingPacket;
@@ -46,7 +46,7 @@ void NetworkServer::SendReliablePacket(
 void NetworkServer::SendUnreliablePacket(
     std::unique_ptr<Packet> packet)
 {
-    for (PlayerNumber playerNumber = 0; playerNumber < maxPlayerNmb;
+    for (PlayerNumber playerNumber = 0; playerNumber < MAX_PLAYER_NMB;
         playerNumber++)
     {
         if (clientInfoMap_[playerNumber].udpRemotePort == 0)
@@ -131,7 +131,7 @@ void NetworkServer::Update([[maybe_unused]] sf::Time dt)
 #ifdef TRACY_ENABLE
     ZoneScoped;
 #endif
-    if (lastSocketIndex_ < maxPlayerNmb)
+    if (lastSocketIndex_ < MAX_PLAYER_NMB)
     {
         const sf::Socket::Status status = tcpListener_.accept(
             tcpSockets_[lastSocketIndex_]);
@@ -146,7 +146,7 @@ void NetworkServer::Update([[maybe_unused]] sf::Time dt)
         }
     }
 
-    for (PlayerNumber playerNumber = 0; playerNumber < maxPlayerNmb;
+    for (PlayerNumber playerNumber = 0; playerNumber < MAX_PLAYER_NMB;
         playerNumber++)
     {
         sf::Packet tcpPacket;
@@ -205,10 +205,10 @@ void NetworkServer::SpawnNewPlayer([[maybe_unused]] ClientId clientId, [[maybe_u
         spawnPlayer->clientId = core::ConvertToBinary(clientMap_[p]);
         spawnPlayer->playerNumber = p;
 
-        const auto pos = spawnPositions[p] * 3.0f;
+        const auto pos = SPAWN_POSITIONS[p] * 3.0f;
         spawnPlayer->pos = ConvertToBinary(pos);
 
-        const auto rotation = spawnRotations[p];
+        const auto rotation = SPAWN_ROTATIONS[p];
         spawnPlayer->angle = core::ConvertToBinary(rotation);
         gameManager_.SpawnPlayer(p, pos, rotation);
         gameManager_.SpawnGloves(p, pos, rotation);

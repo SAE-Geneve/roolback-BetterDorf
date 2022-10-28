@@ -20,7 +20,7 @@ void PlayerCharacterManager::FixedUpdate(sf::Time dt)
 #ifdef TRACY_ENABLE
     ZoneScoped;
 #endif
-    for (PlayerNumber playerNumber = 0; playerNumber < maxPlayerNmb; playerNumber++)
+    for (PlayerNumber playerNumber = 0; playerNumber < MAX_PLAYER_NMB; playerNumber++)
     {
         const auto playerEntity = gameManager_.GetEntityFromPlayerNumber(playerNumber);
         if (!entityManager_.HasComponent(playerEntity,
@@ -37,12 +37,12 @@ void PlayerCharacterManager::FixedUpdate(sf::Time dt)
         const std::array punch = { static_cast<bool>(input & PlayerInputEnum::PlayerInput::PUNCH),
             static_cast<bool>(input & PlayerInputEnum::PlayerInput::PUNCH2) };
 
-        const auto rotation = ((left ? -1.0f : 0.0f) + (right ? 1.0f : 0.0f)) * playerRotationalSpeed * dt.asSeconds();
+        const auto rotation = ((left ? -1.0f : 0.0f) + (right ? 1.0f : 0.0f)) * PLAYER_ROTATIONAL_SPEED * dt.asSeconds();
         playerBody.rotation += rotation;
 
         const auto dir = core::Vec2f::up().Rotate(-playerBody.rotation);
 
-        const auto speed = ((down ? -1.0f : 0.0f) + (up ? 1.0f : 0.0f)) * dir * playerSpeed;
+        const auto speed = ((down ? -1.0f : 0.0f) + (up ? 1.0f : 0.0f)) * dir * PLAYER_SPEED;
 
         // Reduce velocity to match max speed if player isn't being knocked back
         if (playerCharacter.knockBackTime <= 0.0f)
@@ -51,13 +51,13 @@ void PlayerCharacterManager::FixedUpdate(sf::Time dt)
 
             if (playerBody.velocity != core::Vec2f::zero())
             {
-                if (playerBody.velocity.GetMagnitude() > playerMaxSpeed)
+                if (playerBody.velocity.GetMagnitude() > PLAYER_MAX_SPEED)
                 {
-                    playerBody.velocity = playerBody.velocity.GetNormalized() * (playerMaxSpeed - FLT_EPSILON);
+                    playerBody.velocity = playerBody.velocity.GetNormalized() * (PLAYER_MAX_SPEED - FLT_EPSILON);
                 }
                 else if (!up && !down)
                 {
-                    playerBody.velocity = playerBody.velocity * (1.0f - playerFrictionLoss * dt.asSeconds());
+                    playerBody.velocity = playerBody.velocity * (1.0f - PLAYER_FRICTION_LOSS * dt.asSeconds());
                 }
             }
         }

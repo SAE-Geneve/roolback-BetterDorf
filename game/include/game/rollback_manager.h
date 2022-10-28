@@ -3,6 +3,7 @@
 #include "physics_manager.h"
 #include "player_character.h"
 #include "glove_manager.h"
+#include "game/effects.h"
 #include "engine/entity.h"
 #include "engine/transform.h"
 #include "network/packet_type.h"
@@ -56,7 +57,7 @@ public:
      * \param newValidatedFrame is the new frame that is validated
      * \param serverPhysicsState is the physics state given by the server through a packet
      */
-    void ConfirmFrame(Frame newValidatedFrame, const std::array<PhysicsState, maxPlayerNmb>& serverPhysicsState);
+    void ConfirmFrame(Frame newValidatedFrame, const std::array<PhysicsState, MAX_PLAYER_NMB>& serverPhysicsState);
     [[nodiscard]] PhysicsState GetValidatePhysicsState(PlayerNumber playerNumber) const;
     [[nodiscard]] Frame GetLastValidateFrame() const { return lastValidatedFrame_; }
     [[nodiscard]] Frame GetLastReceivedFrame(PlayerNumber playerNumber) const { return lastReceivedFrame_[playerNumber]; }
@@ -75,6 +76,8 @@ public:
      * \param gloveNum inform on where to spawn the glove. 0 is right Glove 1 is left Glove
      */
     void SpawnGlove(core::Entity playerEntity, core::Entity entity, core::Vec2f position, core::Degree rotation, float sign);
+
+    void SpawnEffect(core::Entity, EffectType type, core::Vec2f position);
     /**
      * \brief DestroyEntity is a method that does not destroy the entity definitely, but puts the DESTROY flag on.
      * An entity is truly destroyed when the destroy frame is validated.
@@ -83,7 +86,7 @@ public:
     void DestroyEntity(core::Entity entity);
 
     void OnTrigger(core::Entity entity1, core::Entity entity2) override;
-    [[nodiscard]] const std::array<PlayerInput, windowBufferSize>& GetInputs(PlayerNumber playerNumber) const
+    [[nodiscard]] const std::array<PlayerInput, WINDOW_BUFFER_SIZE>& GetInputs(PlayerNumber playerNumber) const
     {
         return inputs_[playerNumber];
     }
@@ -119,12 +122,14 @@ private:
     PhysicsManager currentPhysicsManager_;
     PlayerCharacterManager currentPlayerManager_;
     GloveManager currentGloveManager_;
+    EffectManager currentEffectManager_;
     /**
      * Last Validated (confirm frame) Component Managers used for rollback
      */
     PhysicsManager lastValidatedPhysicsManager_;
     PlayerCharacterManager lastValidatedPlayerManager_;
     GloveManager lastValidatedGloveManager_;
+    EffectManager lastValidatedEffectManager_;
     /**
      * \brief lastValidatedFrame_ is the last validated frame from the server side.
      */
@@ -139,8 +144,8 @@ private:
      */
     Frame testedFrame_ = 0;
 
-    std::array<std::uint32_t, maxPlayerNmb> lastReceivedFrame_{};
-    std::array<std::array<PlayerInput, windowBufferSize>, maxPlayerNmb> inputs_{};
+    std::array<std::uint32_t, MAX_PLAYER_NMB> lastReceivedFrame_{};
+    std::array<std::array<PlayerInput, WINDOW_BUFFER_SIZE>, MAX_PLAYER_NMB> inputs_{};
     /**
      * \brief Array containing all the created entities in the window between the confirm frame and the current frame
      * to destroy them when rollbacking.

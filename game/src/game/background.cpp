@@ -20,10 +20,11 @@ void game::Background::Init(sf::Vector2u windowSize)
     }
 
     // Make the spike tiles
-    sf::Vector2u tileSize = tilesTxts_[0].getSize();
-    for (unsigned x = 0; x < windowSize.x; x += tileSize.x)
+    const sf::Vector2u tileSize = tilesTxts_[0].getSize();
+    int constexpr SIDE_BUFFER = 15;
+    for (int x = 0 - SIDE_BUFFER * static_cast<int>(tileSize.x); x < static_cast<int>(windowSize.x + SIDE_BUFFER * tileSize.x); x += tileSize.x)
     {
-        for (unsigned y = 0; y < windowSize.y; y += tileSize.y)
+        for (int y = 0 - SIDE_BUFFER * static_cast<int>(tileSize.y); y < static_cast<int>(windowSize.y + SIDE_BUFFER * tileSize.y); y += tileSize.y)
         {
             sf::Sprite tile;
             tile.setTexture(tilesTxts_[std::rand() % tilesNum_]);
@@ -38,12 +39,10 @@ void game::Background::Init(sf::Vector2u windowSize)
     stage_.setOrigin(static_cast<sf::Vector2f>(stageTxt_.getSize()) / 2.0f);
     const auto size = stageTxt_.getSize();
 
-    stage_.setScale({ battleStagewidth / static_cast<float>(size.x) * core::pixelPerMeter,
-        battleStageHeight / static_cast<float>(size.y) * core::pixelPerMeter });
+    stage_.setScale({ BATTLE_STAGE_WIDTH / static_cast<float>(size.x) * core::pixelPerMeter,
+        BATTLE_STAGE_HEIGHT / static_cast<float>(size.y) * core::pixelPerMeter });
 
     stage_.setPosition(windowSize.x / 2.0f,windowSize.y / 2.0f);
-
-
 }
 
 void game::Background::Draw(sf::RenderTarget& renderTarget)

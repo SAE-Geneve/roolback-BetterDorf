@@ -26,7 +26,7 @@ protected:
     //Server game manager
     GameManager gameManager_;
     PlayerNumber lastPlayerNumber_ = 0;
-    std::array<ClientId, maxPlayerNmb> clientMap_{};
+    std::array<ClientId, MAX_PLAYER_NMB> clientMap_{};
 
 };
 }

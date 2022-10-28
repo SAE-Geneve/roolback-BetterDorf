@@ -30,8 +30,8 @@ public:
 
     void OnEvent(const sf::Event& event) override;
 private:
-    std::array<NetworkClient, maxPlayerNmb> clients_;
-    std::array<sf::RenderTexture, maxPlayerNmb> clientsFramebuffers_;
+    std::array<NetworkClient, MAX_PLAYER_NMB> clients_;
+    std::array<sf::RenderTexture, MAX_PLAYER_NMB> clientsFramebuffers_;
     sf::Sprite screenQuad_;
     sf::Vector2u windowSize_;
 };

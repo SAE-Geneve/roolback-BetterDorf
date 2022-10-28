@@ -109,7 +109,7 @@ void SimulationApp::Draw(sf::RenderTarget& renderTarget)
 #ifdef TRACY_ENABLE
     ZoneScoped;
 #endif
-    for (PlayerNumber playerNumber = 0; playerNumber < maxPlayerNmb; playerNumber++)
+    for (PlayerNumber playerNumber = 0; playerNumber < MAX_PLAYER_NMB; playerNumber++)
     {
         clientsFramebuffers_[playerNumber].clear(sf::Color::Black);
         clients_[playerNumber]->Draw(clientsFramebuffers_[playerNumber]);

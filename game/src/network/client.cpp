@@ -42,7 +42,7 @@ void Client::ReceivePacket(const Packet* packet)
         using namespace std::chrono;
         const auto startingTime = (duration_cast<duration<long long, std::milli>>(
             system_clock::now().time_since_epoch()
-            ) + milliseconds(startDelay)).count() - milliseconds(static_cast<long long>(currentPing_)).count();
+            ) + milliseconds(START_DELAY)).count() - milliseconds(static_cast<long long>(currentPing_)).count();
 
         gameManager_.StartGame(startingTime);
         break;
@@ -101,7 +101,7 @@ void Client::ReceivePacket(const Packet* packet)
     {
         const auto* validateFramePacket = static_cast<const ValidateFramePacket*>(packet);
         const auto newValidateFrame = core::ConvertFromBinary<Frame>(validateFramePacket->newValidateFrame);
-        std::array<PhysicsState, maxPlayerNmb> physicsStates{};
+        std::array<PhysicsState, MAX_PLAYER_NMB> physicsStates{};
         for (size_t i = 0; i < validateFramePacket->physicsState.size(); i++)
         {
             auto* statePtr = reinterpret_cast<std::uint8_t*>(physicsStates.data());

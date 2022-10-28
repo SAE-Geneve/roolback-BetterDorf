@@ -33,62 +33,65 @@ using Frame = std::uint32_t;
 /**
  * \brief mmaxPlayerNmb is a integer constant that defines the maximum number of player per game
  */
-constexpr std::uint32_t maxPlayerNmb = 2;
-constexpr float playerSpeed = 10.5f;
-constexpr float playerMaxSpeed = 4.5f;
-constexpr float playerFrictionLoss = 3.5f;
-constexpr core::Degree playerRotationalSpeed(150.0f);
-constexpr float playerColRadius = 0.5f;
-constexpr float playerInvincibilityPeriod = 0.5f;
-constexpr float invincibilityFlashPeriod = 0.1f;
-constexpr float playerKnockbackTime = 0.5f;
-constexpr float playerKnockbackScaling = 7.0f;
-constexpr float playerBaseKnockbackMod = 2.0f;
-constexpr float gloveKnockbackMod = 7.0f;
+constexpr float ANIMATION_PERIOD = 0.15f;
+constexpr int ANIMATION_PIXEL_SIZE = 32;
 
-constexpr float gloveMinDist = 1.2f;
-constexpr float gloveMaxDist = 1.6f;
-constexpr float gloveIdealDist = 1.3f;
-constexpr float gloveDamage = 30.0f;
-constexpr float gloveColRadius = 0.4f;
+constexpr std::uint32_t MAX_PLAYER_NMB = 2;
+constexpr float PLAYER_SPEED = 10.5f;
+constexpr float PLAYER_MAX_SPEED = 4.5f;
+constexpr float PLAYER_FRICTION_LOSS = 3.5f;
+constexpr core::Degree PLAYER_ROTATIONAL_SPEED(150.0f);
+constexpr float PLAYER_COL_RADIUS = 0.5f;
+constexpr float PLAYER_INVINCIBILITY_PERIOD = 0.5f;
+constexpr float INVINCIBILITY_FLASH_PERIOD = 0.1f;
+constexpr float PLAYER_KNOCKBACK_TIME = 0.5f;
+constexpr float PLAYER_KNOCKBACK_SCALING = 7.0f;
+constexpr float PLAYER_BASE_KNOCKBACK_MOD = 2.0f;
+constexpr float GLOVE_KNOCKBACK_MOD = 7.0f;
+
+constexpr float GLOVE_MIN_DIST = 1.2f;
+constexpr float GLOVE_MAX_DIST = 1.6f;
+constexpr float GLOVE_IDEAL_DIST = 1.3f;
+constexpr float GLOVE_DAMAGE = 30.0f;
+constexpr float GLOVE_COL_RADIUS = 0.4f;
 /**
  * \brief Starting angle for the section where the glove is allowed to be in
  */
-constexpr core::Degree gloveAngle1(20.0f);
+constexpr core::Degree GLOVE_ANGLE_1(20.0f);
 /**
 * \brief Ending angle for the section where the glove is allowed to be in
 */
-constexpr core::Degree gloveAngle2(130.0f);
-constexpr core::Degree gloveIdealAngle(40.0f);
+constexpr core::Degree GLOVE_ANGLE_2(130.0f);
+constexpr core::Degree GLOVE_IDEAL_ANGLE(40.0f);
 
-constexpr float punchWindUptime = 0.05f;
-constexpr float punchingTime = 0.18f;
-constexpr float gloveRecoveryTime = 0.85f;
-constexpr float punchingSpeed = 10.5f;
-constexpr float gloveHoverSpeed = 1.5f;
-constexpr float gloveDistSpeedBoost = 0.5f;
+constexpr float PUNCH_WINDUP_TIME = 0.05f;
+constexpr float PUNCHING_TIME = 0.18f;
+constexpr float GLOVE_RECOVERY_TIME = 0.85f;
+constexpr float PUNCHING_SPEED = 10.5f;
+constexpr float GLOVE_HOVER_SPEED = 1.5f;
+constexpr float GLOVE_DIST_SPEED_BOOST = 0.5f;
 
-constexpr float battleStageHeight = 15.0f;
-constexpr float battleStagewidth = 15.0f;
+constexpr float BATTLE_STAGE_HEIGHT = 15.0f;
+constexpr float BATTLE_STAGE_WIDTH = 15.0f;
 /**
  * \brief windowBufferSize is the size of input stored by a client. 5 seconds of frame at 50 fps
  */
-constexpr std::size_t windowBufferSize = 5u * 50u;
+constexpr std::size_t WINDOW_BUFFER_SIZE = 5u * 50u;
 /**
  * \brief startDelay is the delay to wait before starting a game in milliseconds
  */
-constexpr long long startDelay = 3000;
+constexpr long long START_DELAY = 3000;
 /**
  * \brief maxInputNmb is the number of inputs stored into an PlayerInputPacket
  */
-constexpr std::size_t maxInputNmb = 50;
+constexpr std::size_t MAX_INPUT_NMB = 50;
 /**
  * \brief fixedPeriod is the period used in seconds to start a new FixedUpdate method in the game::GameManager
  */
-constexpr float fixedPeriod = 0.02f; //50fps
+constexpr float FIXED_PERIOD = 0.02f; //50fps
 
-constexpr core::Color gloveOffColor(0,0,0, 155);
-constexpr std::array<core::Color, std::max(4u, maxPlayerNmb)> playerColors
+constexpr core::Color GLOVE_OFF_COLOR(0,0,0, 155);
+constexpr std::array<core::Color, std::max(4u, MAX_PLAYER_NMB)> PLAYER_COLORS
 {
     core::Color::red(),
     core::Color::blue(),
@@ -96,7 +99,7 @@ constexpr std::array<core::Color, std::max(4u, maxPlayerNmb)> playerColors
     core::Color::cyan()
 };
 
-constexpr std::array<core::Vec2f, std::max(4u, maxPlayerNmb)> spawnPositions
+constexpr std::array<core::Vec2f, std::max(4u, MAX_PLAYER_NMB)> SPAWN_POSITIONS
 {
     core::Vec2f(0,-1),
     core::Vec2f(0,1),
@@ -104,7 +107,7 @@ constexpr std::array<core::Vec2f, std::max(4u, maxPlayerNmb)> spawnPositions
     core::Vec2f(1,0),
 };
 
-constexpr std::array<core::Degree, std::max(4u, maxPlayerNmb)> spawnRotations
+constexpr std::array<core::Degree, std::max(4u, MAX_PLAYER_NMB)> SPAWN_ROTATIONS
 {
     core::Degree(0.0f),
     core::Degree(180.0f),
@@ -118,6 +121,8 @@ enum class ComponentType : core::EntityMask
     GLOVE = static_cast<core::EntityMask>(core::ComponentType::OTHER_TYPE) << 1u,
     PLAYER_INPUT = static_cast<core::EntityMask>(core::ComponentType::OTHER_TYPE) << 2u,
     DESTROYED = static_cast<core::EntityMask>(core::ComponentType::OTHER_TYPE) << 3u,
+    EFFECT = static_cast<core::EntityMask>(core::ComponentType::OTHER_TYPE) << 4u,
+    ANIMATION_DATA = static_cast<core::EntityMask>(core::ComponentType::OTHER_TYPE) << 5u
 };
 
 /**

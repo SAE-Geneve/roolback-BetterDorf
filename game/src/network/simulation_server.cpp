@@ -125,9 +125,9 @@ void SimulationServer::SpawnNewPlayer(ClientId clientId, PlayerNumber playerNumb
     spawnPlayer->clientId = core::ConvertToBinary(clientId);
     spawnPlayer->playerNumber = playerNumber;
 
-    const auto pos = spawnPositions[playerNumber] * 3.0f;
+    const auto pos = SPAWN_POSITIONS[playerNumber] * 3.0f;
     spawnPlayer->pos = ConvertToBinary(pos);
-    const auto rotation = spawnRotations[playerNumber];
+    const auto rotation = SPAWN_ROTATIONS[playerNumber];
     spawnPlayer->angle = core::ConvertToBinary(rotation);
     gameManager_.SpawnPlayer(playerNumber, pos, rotation);
     gameManager_.SpawnGloves(playerNumber, pos, rotation);

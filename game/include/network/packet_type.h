@@ -156,7 +156,7 @@ struct PlayerInputPacket : TypedPacket<PacketType::INPUT>
 {
     PlayerNumber playerNumber = INVALID_PLAYER;
     std::array<std::uint8_t, sizeof(Frame)> currentFrame{};
-    std::array<std::uint8_t, maxInputNmb> inputs{};
+    std::array<std::uint8_t, MAX_INPUT_NMB> inputs{};
 };
 
 inline sf::Packet& operator<<(sf::Packet& packet, const PlayerInputPacket& playerInputPacket)
@@ -184,7 +184,7 @@ struct StartGamePacket : TypedPacket<PacketType::START_GAME>
 struct ValidateFramePacket : TypedPacket<PacketType::VALIDATE_STATE>
 {
     std::array<std::uint8_t, sizeof(Frame)> newValidateFrame{};
-    std::array<std::uint8_t, sizeof(PhysicsState) * maxPlayerNmb> physicsState{};
+    std::array<std::uint8_t, sizeof(PhysicsState) * MAX_PLAYER_NMB> physicsState{};
 };
 
 inline sf::Packet& operator<<(sf::Packet& packet, const ValidateFramePacket& validateFramePacket)

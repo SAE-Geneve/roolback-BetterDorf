@@ -65,9 +65,9 @@ private:
     };
     sf::UdpSocket udpSocket_;
     sf::TcpListener tcpListener_;
-    std::array<sf::TcpSocket, maxPlayerNmb> tcpSockets_;
+    std::array<sf::TcpSocket, MAX_PLAYER_NMB> tcpSockets_;
 
-    std::array<ClientInfo, maxPlayerNmb> clientInfoMap_{};
+    std::array<ClientInfo, MAX_PLAYER_NMB> clientInfoMap_{};
 
 
     unsigned short tcpPort_ = 12345;

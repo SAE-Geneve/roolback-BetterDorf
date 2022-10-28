@@ -1,4 +1,3 @@
-
 #include "game/game_manager.h"
 
 #include "utils/log.h"
@@ -59,7 +58,7 @@ void GameManager::SpawnGloves(PlayerNumber playerNumber, core::Vec2f playerPos, 
         // Calculate position and rotation
         // Positions are swapped if glove is on the right
         const float sign = gloveNum == 0 ? 1.0f : -1.0f;
-        const auto position = playerPos + core::Vec2f(0, gloveIdealDist).Rotate(-playerRot).Rotate(gloveIdealAngle * sign);
+        const auto position = playerPos + core::Vec2f(0, GLOVE_IDEAL_DIST).Rotate(-playerRot).Rotate(GLOVE_IDEAL_ANGLE * sign);
         const auto rotation = playerRot;
 
         transformManager_.AddComponent(entity);
@@ -70,6 +69,23 @@ void GameManager::SpawnGloves(PlayerNumber playerNumber, core::Vec2f playerPos, 
         rollbackManager_.SpawnGlove(playerEntity, entity, position, rotation, sign);
     }
 
+}
+
+core::Entity GameManager::SpawnEffect(EffectType type, const core::Vec2f pos)
+{
+	const core::Entity entity = entityManager_.CreateEntity();
+
+    transformManager_.AddComponent(entity);
+    transformManager_.SetPosition(entity, pos);
+
+    rollbackManager_.SpawnEffect(entity, type, pos);
+
+    return entity;
+}
+
+void GameManager::DestroyEffect(const core::Entity entity)
+{
+    rollbackManager_.DestroyEntity(entity);
 }
 
 core::Entity GameManager::GetEntityFromPlayerNumber(PlayerNumber playerNumber) const
@@ -120,8 +136,8 @@ PlayerNumber GameManager::CheckWinner()
         const auto& player = playerManager.GetComponent(entity);
 
         // Check if player is out of the bounds of the battleStage
-        if (std::abs(playerBody.position.x) > battleStagewidth / 2.0f ||
-            std::abs(playerBody.position.y) > battleStageHeight / 2.0f)
+        if (std::abs(playerBody.position.x) > BATTLE_STAGE_WIDTH / 2.0f ||
+            std::abs(playerBody.position.y) > BATTLE_STAGE_HEIGHT / 2.0f)
         {
             
         }
@@ -143,7 +159,8 @@ void GameManager::WinGame(PlayerNumber winner)
 ClientGameManager::ClientGameManager(PacketSenderInterface& packetSenderInterface) :
     GameManager(),
     packetSenderInterface_(packetSenderInterface),
-    spriteManager_(entityManager_, transformManager_)
+    spriteManager_(entityManager_, transformManager_),
+    animationManager_(entityManager_, spriteManager_)
 {
 }
 
@@ -169,9 +186,10 @@ void ClientGameManager::Begin()
     textRenderer_.setFont(font_);
 
     background_.Init(windowSize_);
+    animationManager_.Init();
 }
 
-void ClientGameManager::Update(sf::Time dt)
+void ClientGameManager::Update(const sf::Time dt)
 {
 
 #ifdef TRACY_ENABLE
@@ -190,13 +208,13 @@ void ClientGameManager::Update(sf::Time dt)
                 const auto& player = rollbackManager_.GetPlayerCharacterManager().GetComponent(entity);
                 
                 if (player.invincibilityTime > 0.0f &&
-                    std::fmod(player.invincibilityTime, invincibilityFlashPeriod) > invincibilityFlashPeriod / 2.0f)
+                    std::fmod(player.invincibilityTime, INVINCIBILITY_FLASH_PERIOD) > INVINCIBILITY_FLASH_PERIOD / 2.0f)
                 {
                     spriteManager_.SetColor(entity, sf::Color::Black);
                 }
                 else
                 {
-                    spriteManager_.SetColor(entity, playerColors[player.playerNumber]);
+                    spriteManager_.SetColor(entity, PLAYER_COLORS[player.playerNumber]);
                 }
             }
         	else if (entityManager_.HasComponent(entity, static_cast<core::EntityMask>(ComponentType::GLOVE) |
@@ -206,11 +224,11 @@ void ClientGameManager::Update(sf::Time dt)
 
                 if (glove.isRecovering)
                 {
-                    spriteManager_.SetColor(entity, gloveOffColor);
+                    spriteManager_.SetColor(entity, GLOVE_OFF_COLOR);
                 }
                 else
                 {
-                    spriteManager_.SetColor(entity, playerColors[glove.playerNumber]);
+                    spriteManager_.SetColor(entity, PLAYER_COLORS[glove.playerNumber]);
                 }
         	}
 
@@ -221,11 +239,14 @@ void ClientGameManager::Update(sf::Time dt)
             }
         }
     }
+
+    animationManager_.Update(dt);
+
     fixedTimer_ += dt.asSeconds();
-    while (fixedTimer_ > fixedPeriod)
+    while (fixedTimer_ > FIXED_PERIOD)
     {
         FixedUpdate();
-        fixedTimer_ -= fixedPeriod;
+        fixedTimer_ -= FIXED_PERIOD;
     }
 }
 
@@ -328,7 +349,7 @@ void ClientGameManager::Draw(sf::RenderTarget& target)
     {
         std::string percent;
         const auto& playerManager = rollbackManager_.GetPlayerCharacterManager();
-        for (PlayerNumber playerNumber = 0; playerNumber < maxPlayerNmb; playerNumber++)
+        for (PlayerNumber playerNumber = 0; playerNumber < MAX_PLAYER_NMB; playerNumber++)
         {
             const auto playerEntity = GetEntityFromPlayerNumber(playerNumber);
             if (playerEntity == core::INVALID_ENTITY)
@@ -361,7 +382,7 @@ void ClientGameManager::SpawnPlayer(PlayerNumber playerNumber, core::Vec2f posit
     spriteManager_.AddComponent(entity);
     spriteManager_.SetTexture(entity, playerTexture_);
     spriteManager_.SetOrigin(entity, sf::Vector2f(playerTexture_.getSize()) / 2.0f);
-    spriteManager_.SetColor(entity, playerColors[playerNumber]);
+    spriteManager_.SetColor(entity, PLAYER_COLORS[playerNumber]);
 }
 
 void ClientGameManager::SpawnGloves(PlayerNumber playerNumber, core::Vec2f playerPos, core::Degree playerRot)
@@ -374,7 +395,7 @@ void ClientGameManager::SpawnGloves(PlayerNumber playerNumber, core::Vec2f playe
         spriteManager_.AddComponent(entity);
         spriteManager_.SetTexture(entity, gloveTexture_);
         spriteManager_.SetOrigin(entity, sf::Vector2f(gloveTexture_.getSize()) / 2.0f);
-        spriteManager_.SetColor(entity, playerColors[playerNumber]);
+        spriteManager_.SetColor(entity, PLAYER_COLORS[playerNumber]);
 
         // Flip the glove if it's the first one
         if (flip)
@@ -384,6 +405,16 @@ void ClientGameManager::SpawnGloves(PlayerNumber playerNumber, core::Vec2f playe
 
         flip = !flip;
     }
+}
+
+core::Entity ClientGameManager::SpawnEffect(const EffectType type, const core::Vec2f pos)
+{
+	const auto entity = GameManager::SpawnEffect(type, pos);
+
+    // TODO make this modular
+    animationManager_.SetupComponent(entity, animationManager_.hitEffect_);
+
+    return entity;
 }
 
 void ClientGameManager::FixedUpdate()
@@ -448,7 +479,6 @@ void ClientGameManager::FixedUpdate()
     rollbackManager_.StartNewFrame(currentFrame_);
 }
 
-
 void ClientGameManager::SetPlayerInput(PlayerNumber playerNumber, PlayerInput playerInput, std::uint32_t inputFrame)
 {
     if (playerNumber == INVALID_PLAYER)
@@ -478,14 +508,14 @@ void ClientGameManager::DrawImGui()
 }
 
 void ClientGameManager::ConfirmValidateFrame(Frame newValidateFrame,
-    const std::array<PhysicsState, maxPlayerNmb>& physicsStates)
+    const std::array<PhysicsState, MAX_PLAYER_NMB>& physicsStates)
 {
     if (newValidateFrame < rollbackManager_.GetLastValidateFrame())
     {
         core::LogWarning(fmt::format("New validate frame is too old"));
         return;
     }
-    for (PlayerNumber playerNumber = 0; playerNumber < maxPlayerNmb; playerNumber++)
+    for (PlayerNumber playerNumber = 0; playerNumber < MAX_PLAYER_NMB; playerNumber++)
     {
         if (rollbackManager_.GetLastReceivedFrame(playerNumber) < newValidateFrame)
         {
@@ -521,7 +551,7 @@ void ClientGameManager::UpdateCameraView()
     const sf::Vector2f extends{ cameraView_.getSize() / 2.0f / core::pixelPerMeter };
     float currentZoom = 1.0f;
     constexpr float margin = 1.0f;
-    for (PlayerNumber playerNumber = 0; playerNumber < maxPlayerNmb; playerNumber++)
+    for (PlayerNumber playerNumber = 0; playerNumber < MAX_PLAYER_NMB; playerNumber++)
     {
         const auto playerEntity = GetEntityFromPlayerNumber(playerNumber);
         if (playerEntity == core::INVALID_ENTITY)
@@ -550,6 +580,5 @@ void ClientGameManager::UpdateCameraView()
         }
     }
     cameraView_.zoom(currentZoom);
-
 }
 }

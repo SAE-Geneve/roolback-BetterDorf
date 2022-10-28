@@ -37,7 +37,7 @@ void Server::ReceivePacket(std::unique_ptr<Packet> packet)
 
             lastPlayerNumber_++;
 
-            if (lastPlayerNumber_ == maxPlayerNmb)
+            if (lastPlayerNumber_ == MAX_PLAYER_NMB)
             {
                 auto startGamePacket = std::make_unique<StartGamePacket>();
                 startGamePacket->packetType = PacketType::START_GAME;
@@ -70,7 +70,7 @@ void Server::ReceivePacket(std::unique_ptr<Packet> packet)
 
         //Validate new frame if needed
         std::uint32_t lastReceiveFrame = gameManager_.GetRollbackManager().GetLastReceivedFrame(0);
-        for (PlayerNumber i = 1; i < maxPlayerNmb; i++)
+        for (PlayerNumber i = 1; i < MAX_PLAYER_NMB; i++)
         {
             const auto playerLastFrame = gameManager_.GetRollbackManager().GetLastReceivedFrame(i);
             if (playerLastFrame < lastReceiveFrame)
@@ -87,7 +87,7 @@ void Server::ReceivePacket(std::unique_ptr<Packet> packet)
             validatePacket->newValidateFrame = core::ConvertToBinary(lastReceiveFrame);
 
             //copy physics state
-            for (PlayerNumber i = 0; i < maxPlayerNmb; i++)
+            for (PlayerNumber i = 0; i < MAX_PLAYER_NMB; i++)
             {
                 auto physicsState = gameManager_.GetRollbackManager().GetValidatePhysicsState(i);
                 const auto* statePtr = reinterpret_cast<const std::uint8_t*>(&physicsState);
