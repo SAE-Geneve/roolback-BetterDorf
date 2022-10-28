@@ -266,6 +266,8 @@ void ClientGameManager::SetWindowSize(sf::Vector2u windowsSize)
     auto& currentPhysicsManager = rollbackManager_.GetCurrentPhysicsManager();
     currentPhysicsManager.SetCenter(sf::Vector2f(windowsSize) / 2.0f);
     currentPhysicsManager.SetWindowSize(sf::Vector2f(windowsSize));
+
+    background_.SetWindowSize(windowsSize);
 }
 
 void ClientGameManager::Draw(sf::RenderTarget& target)
@@ -550,7 +552,6 @@ void ClientGameManager::UpdateCameraView()
     cameraView_ = originalView_;
     const sf::Vector2f extends{ cameraView_.getSize() / 2.0f / core::pixelPerMeter };
     float currentZoom = 1.0f;
-    constexpr float margin = 1.0f;
     for (PlayerNumber playerNumber = 0; playerNumber < MAX_PLAYER_NMB; playerNumber++)
     {
         const auto playerEntity = GetEntityFromPlayerNumber(playerNumber);
@@ -560,7 +561,8 @@ void ClientGameManager::UpdateCameraView()
         }
         if (entityManager_.HasComponent(playerEntity, static_cast<core::EntityMask>(core::ComponentType::POSITION)))
         {
-            const auto position = transformManager_.GetPosition(playerEntity);
+	        constexpr float margin = 1.0f;
+	        const auto position = transformManager_.GetPosition(playerEntity);
             if (core::Abs(position.x) + margin > extends.x)
             {
                 const auto ratio = (std::abs(position.x) + margin) / extends.x;

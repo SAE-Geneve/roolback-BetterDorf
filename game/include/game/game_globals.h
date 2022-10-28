@@ -33,7 +33,7 @@ using Frame = std::uint32_t;
 /**
  * \brief mmaxPlayerNmb is a integer constant that defines the maximum number of player per game
  */
-constexpr float ANIMATION_PERIOD = 0.15f;
+constexpr float ANIMATION_PERIOD = 0.05f;
 constexpr int ANIMATION_PIXEL_SIZE = 32;
 
 constexpr std::uint32_t MAX_PLAYER_NMB = 2;
