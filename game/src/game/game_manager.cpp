@@ -149,7 +149,7 @@ PlayerNumber GameManager::CheckWinner()
 
     if (winningPlayer == 0)
     {
-        // If both loses, default to a single winner
+        // If both loses, default to 
         return 1;
     }
 
