@@ -24,7 +24,7 @@ struct AnimationData
 {
     float time = 0;
     int textureIdx = 0;
-    Animation* animation;
+    Animation* animation = nullptr;
 };
 
 /**

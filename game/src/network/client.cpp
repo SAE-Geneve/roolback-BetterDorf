@@ -15,8 +15,7 @@ void Client::ReceivePacket(const Packet* packet)
 #ifdef TRACY_ENABLE
     ZoneScoped;
 #endif
-    const auto packetType = packet->packetType;
-    switch (packetType)
+	switch (packet->packetType)  // NOLINT(clang-diagnostic-switch-enum)
     {
     case PacketType::SPAWN_PLAYER:
     {
@@ -146,9 +145,9 @@ void Client::ReceivePacket(const Packet* packet)
             rto_ = srtt_ + std::max(g, k * rttvar_);
             currentPing_ = srtt_;
         }
-
+        break;
     }
-    default:;
+    default: break;
     }
 
 }
