@@ -57,7 +57,7 @@ void Client::ReceivePacket(const Packet* packet)
         {
             //Verify the inputs coming back from the server
             const auto& inputs = gameManager_.GetRollbackManager().GetInputs(playerNumber);
-            const auto currentFrame = gameManager_.GetRollbackManager().GetCurrentFrame();
+            const auto currentFrame = gameManager_.GetRollbackManager().GetCurrentInputFrame();
             
             for (size_t i = 0; i < playerInputPacket->inputs.size(); i++)
             {

@@ -62,6 +62,7 @@ public:
     [[nodiscard]] Frame GetLastValidateFrame() const { return lastValidatedFrame_; }
     [[nodiscard]] Frame GetLastReceivedFrame(PlayerNumber playerNumber) const { return lastReceivedFrame_[playerNumber]; }
     [[nodiscard]] Frame GetCurrentFrame() const { return currentFrame_; }
+    [[nodiscard]] Frame GetCurrentInputFrame() const { return currentInputFrame_; }
     [[nodiscard]] const core::TransformManager& GetTransformManager() const { return currentTransformManager_; }
     [[nodiscard]] const PlayerCharacterManager& GetPlayerCharacterManager() const { return currentPlayerManager_; }
     [[nodiscard]] const GloveManager& GetGloveManager() const { return currentGloveManager_; }
