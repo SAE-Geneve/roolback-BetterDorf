@@ -413,6 +413,8 @@ core::Entity ClientGameManager::SpawnEffect(const EffectType type, const core::V
 {
 	const auto entity = GameManager::SpawnEffect(type, pos);
 
+    rollbackManager_.SpawnEffect(entity, type, pos);
+
 	switch (type)
 	{
 	case EffectType::HIT:

@@ -15,6 +15,8 @@ void AnimationManager::SetupComponent(core::Entity entity, Animation& animation)
 		AddComponent(entity);
 	}
 	auto& data = GetComponent(entity);
+	data.textureIdx = 0;
+	data.time = 0.0f;
 	data.animation = &animation;
 	SetComponent(entity, data);
 

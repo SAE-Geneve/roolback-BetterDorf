@@ -21,8 +21,10 @@ void game::EffectManager::FixedUpdate(sf::Time dt)
 		}
 		if (entityManager_.HasComponent(entity, static_cast<core::EntityMask>(ComponentType::EFFECT)))
 		{
-			auto& effect = components_[entity];
+			auto& effect = GetComponent(entity);
 			effect.lifetime -= dt.asSeconds();
+
+			SetComponent(entity, effect);
 			if (effect.lifetime < 0.0f)
 			{
 				gameManager_.DestroyEffect(entity);

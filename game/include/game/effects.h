@@ -13,8 +13,7 @@ enum class EffectType
 
 struct Effect
 {
-	float lifetime = 1.0f;
-	float startingTime = 1.0f;
+	float lifetime = EFFECTS_LIFETIME;
 	EffectType type = EffectType::HIT;
 };
 

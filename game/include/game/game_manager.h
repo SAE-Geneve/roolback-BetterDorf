@@ -106,6 +106,7 @@ protected:
     PlayerNumber clientPlayer_ = INVALID_PLAYER;
     core::SpriteManager spriteManager_;
     AnimationManager animationManager_;
+
     float fixedTimer_ = 0.0f;
     unsigned long long startingTime_ = 0;
     std::uint32_t state_ = 0;

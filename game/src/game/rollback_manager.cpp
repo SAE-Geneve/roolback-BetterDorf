@@ -80,6 +80,7 @@ void RollbackManager::SimulateToCurrentFrame()
 		currentPlayerManager_.FixedUpdate(sf::seconds(FIXED_PERIOD));
 		currentGloveManager_.FixedUpdate(sf::seconds(FIXED_PERIOD));
 		currentPhysicsManager_.FixedUpdate(sf::seconds(FIXED_PERIOD));
+		currentEffectManager_.FixedUpdate(sf::seconds(FIXED_PERIOD));
 	}
 	//Copy the physics states to the transforms
 	for (core::Entity entity = 0; entity < entityManager_.GetEntitiesSize(); entity++)
@@ -200,6 +201,7 @@ void RollbackManager::ValidateFrame(Frame newValidateFrame)
 		currentPlayerManager_.FixedUpdate(sf::seconds(FIXED_PERIOD));
 		currentGloveManager_.FixedUpdate(sf::seconds(FIXED_PERIOD));
 		currentPhysicsManager_.FixedUpdate(sf::seconds(FIXED_PERIOD));
+		currentEffectManager_.FixedUpdate(sf::seconds(FIXED_PERIOD));
 	}
 	//Definitely remove DESTROY entities
 	for (core::Entity entity = 0; entity < entityManager_.GetEntitiesSize(); entity++)
@@ -365,6 +367,7 @@ void RollbackManager::SpawnEffect(core::Entity entity, EffectType type, core::Ve
 	currentEffectManager_.AddComponent(entity);
  	auto effect = currentEffectManager_.GetComponent(entity);
 	effect.type = type;
+	effect.lifetime = EFFECTS_LIFETIME;
 	currentEffectManager_.SetComponent(entity, effect);
 
 	currentTransformManager_.AddComponent(entity);
