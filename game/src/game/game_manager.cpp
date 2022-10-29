@@ -549,11 +549,15 @@ void ClientGameManager::ConfirmValidateFrame(Frame newValidateFrame,
 
 void ClientGameManager::WinGame(PlayerNumber winner)
 {
+    if (state_ & FINISHED)
+        return;
+
     GameManager::WinGame(winner);
 
     const PlayerNumber loser = (winner + 1) % 2;
     const auto& body = rollbackManager_.GetCurrentPhysicsManager().GetBody(GetEntityFromPlayerNumber(loser));
     SpawnEffect(EffectType::SKULL, body.position);
+    core::LogDebug("WINNER CALLEd");
 
     state_ = state_ | FINISHED;
 }
