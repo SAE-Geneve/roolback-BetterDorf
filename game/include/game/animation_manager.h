@@ -16,6 +16,8 @@ class GameManager;
 
 struct Animation
 {
+    Animation() = default;
+    explicit Animation(const bool looping) : looping(looping){}
 	sf::Texture animTexture;
     bool looping = false;
 };
@@ -49,6 +51,7 @@ public:
     Animation hitEffect_;
     Animation bigHitEffect_;
     Animation growingSkull_;
+    Animation trophy_ = Animation(true);
 private:
     core::SpriteManager& spriteManager_;
 };

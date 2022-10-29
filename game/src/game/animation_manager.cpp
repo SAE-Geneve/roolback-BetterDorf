@@ -48,6 +48,10 @@ void AnimationManager::Init()
 	{
 		core::LogError("Failed to load skull texture");
 	}
+	if (!trophy_.animTexture.loadFromFile("data/sprites/Trophy.png"))
+	{
+		core::LogError("Failed to load trophy texture");
+	}
 }
 
 void AnimationManager::Update(const sf::Time dt)

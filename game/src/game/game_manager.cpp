@@ -436,6 +436,10 @@ core::Entity ClientGameManager::SpawnEffect(const EffectType type, const core::V
         animationManager_.SetupComponent(entity, animationManager_.growingSkull_);
         break;
 		}
+	case EffectType::TROPHY:
+		{
+        animationManager_.SetupComponent(entity, animationManager_.trophy_);
+		}
     default: break;  // NOLINT(clang-diagnostic-covered-switch-default)
 	}
 
@@ -565,9 +569,10 @@ void ClientGameManager::WinGame(PlayerNumber winner)
     GameManager::WinGame(winner);
 
     const PlayerNumber loser = (winner + 1) % 2;
-    const auto& body = rollbackManager_.GetCurrentPhysicsManager().GetBody(GetEntityFromPlayerNumber(loser));
-    SpawnEffect(EffectType::SKULL, body.position);
-    core::LogDebug("WINNER CALLEd");
+    const auto& loserBody = rollbackManager_.GetCurrentPhysicsManager().GetBody(GetEntityFromPlayerNumber(loser));
+    const auto& winnerBody = rollbackManager_.GetCurrentPhysicsManager().GetBody(GetEntityFromPlayerNumber(winner));
+    SpawnEffect(EffectType::SKULL, loserBody.position);
+    SpawnEffect(EffectType::TROPHY, winnerBody.position);
 
     state_ = state_ | FINISHED;
 }

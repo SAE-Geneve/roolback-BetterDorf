@@ -9,7 +9,8 @@ enum class EffectType
 {
 	HIT,
 	HIT_BIG,
-	SKULL
+	SKULL,
+	TROPHY
 };
 
 struct Effect
