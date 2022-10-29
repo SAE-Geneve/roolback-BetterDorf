@@ -32,6 +32,8 @@ void RollbackManager::SimulateToCurrentFrame()
 #ifdef TRACY_ENABLE
 	ZoneScoped;
 #endif
+	reSimulating_ = true;
+
 	const auto currentFrame = gameManager_.GetCurrentFrame();
 	const auto lastValidateFrame = gameManager_.GetLastValidateFrame();
 	//Destroying all created Entities after the last validated frame
@@ -90,6 +92,8 @@ void RollbackManager::SimulateToCurrentFrame()
 		currentTransformManager_.SetPosition(entity, body.position);
 		currentTransformManager_.SetRotation(entity, body.rotation);
 	}
+
+	reSimulating_ = false;
 }
 
 void RollbackManager::SetPlayerInput(PlayerNumber playerNumber, PlayerInput playerInput, Frame inputFrame)
@@ -434,7 +438,10 @@ void RollbackManager::ManagePGCollision(auto playerEntity, auto gloveEntity)
 	// Change glove properties
 	currentGloveManager_.StartReturn(gloveEntity);
 
-	gameManager_.SpawnEffect(EffectType::HIT_BIG, (gloveBody.position + playerBody.position) / 2.0f);
+	if (!reSimulating_)
+	{
+		gameManager_.SpawnEffect(EffectType::HIT_BIG, (gloveBody.position + playerBody.position) / 2.0f);
+	}
 }
 
 void RollbackManager::ManageGGCollision(auto firstGloveEntity, auto secondGloveEntity)
@@ -477,7 +484,10 @@ void RollbackManager::ManageGGCollision(auto firstGloveEntity, auto secondGloveE
 		currentPhysicsManager_.SetBody(secondGloveEntity, glove2Body);
 	}
 
-	gameManager_.SpawnEffect(EffectType::HIT, (glove1Body.position + glove2Body.position) / 2.0f);
+	if (!reSimulating_)
+	{
+		gameManager_.SpawnEffect(EffectType::HIT, (glove1Body.position + glove2Body.position) / 2.0f);
+	}
 }
 
 void RollbackManager::HandlePunchCollision(Body gloveBody, core::Entity gloveEntity,

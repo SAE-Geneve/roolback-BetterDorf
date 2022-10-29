@@ -1,15 +1,14 @@
 #include "game/sound.h"
 
-#include <SFML/Audio/Sound.hpp>
 #include "utils/log.h"
 
 void SoundPlayer::Init()
 {
-	if (!hitBuffer_.loadFromFile(""))
+	if (!hitBuffer_.loadFromFile("data/sounds/Hit.wav"))
 	{
 		core::LogError("Couldn't load hit sound");
 	}
-	if (!hitBigBuffer_.loadFromFile(""))
+	if (!hitBigBuffer_.loadFromFile("data/sounds/HitBig.wav"))
 	{
 		core::LogError("Couldn't load big hit sound");
 	}
@@ -41,11 +40,23 @@ void SoundPlayer::PlayEffectSound(SoundEffect soundEffect)
 	{
 		sounds_.emplace_back();
 		it = sounds_.end() - 1;
+		it->setLoop(false);
 	}
 
 	switch (soundEffect)
 	{
 	case SoundEffect::HIT:
+		it->setBuffer(hitBuffer_);
+		break;
+	case SoundEffect::HIT_BIG:
+		it->setBuffer(hitBigBuffer_);
+		break;
+	case SoundEffect::WIN:
+		it->setBuffer(winBuffer_);
+		break;
+	case SoundEffect::LOSE:
+		it->setBuffer(loseBuffer_);
 		break;
 	}
+	it->play(); 
 }

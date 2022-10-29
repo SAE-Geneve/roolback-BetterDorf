@@ -142,6 +142,11 @@ private:
      */
     Frame testedFrame_ = 0;
 
+    /**
+     * \brief used to avoid playing sounds and effects multiple times.
+     */
+    bool reSimulating_ = false;
+
     std::array<std::uint32_t, MAX_PLAYER_NMB> lastReceivedFrame_{};
     std::array<std::array<PlayerInput, WINDOW_BUFFER_SIZE>, MAX_PLAYER_NMB> inputs_{};
     /**

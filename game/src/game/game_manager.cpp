@@ -186,6 +186,7 @@ void ClientGameManager::Begin()
 
     background_.Init(windowSize_);
     animationManager_.Init();
+    soundPlayer_.Init();
 }
 
 void ClientGameManager::Update(const sf::Time dt)
@@ -433,9 +434,11 @@ core::Entity ClientGameManager::SpawnEffect(const EffectType type, const core::V
 	{
 	case EffectType::HIT:
         animationManager_.SetupComponent(entity, animationManager_.hitEffect_);
+        soundPlayer_.PlayEffectSound(SoundEffect::HIT);
 		break;
 	case EffectType::HIT_BIG:
         animationManager_.SetupComponent(entity, animationManager_.bigHitEffect_);
+        soundPlayer_.PlayEffectSound(SoundEffect::HIT_BIG);
         break;
 	case EffectType::SKULL:
 		{

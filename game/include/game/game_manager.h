@@ -14,6 +14,7 @@
 #include "graphics/graphics.h"
 #include "graphics/sprite.h"
 #include "game/background.h"
+#include "game/sound.h"
 #include "engine/system.h"
 #include "engine/transform.h"
 #include "network/packet_type.h"
@@ -108,6 +109,7 @@ protected:
     core::SpriteManager spriteManager_;
     AnimationManager animationManager_;
     EffectManager effectManager_;
+    SoundPlayer soundPlayer_;
 
     float fixedTimer_ = 0.0f;
     unsigned long long startingTime_ = 0;
