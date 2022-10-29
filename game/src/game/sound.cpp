@@ -12,11 +12,11 @@ void SoundPlayer::Init()
 	{
 		core::LogError("Couldn't load big hit sound");
 	}
-	if (!winBuffer_.loadFromFile(""))
+	if (!winBuffer_.loadFromFile("data/sounds/Win.wav"))
 	{
 		core::LogError("Couldn't load win sound");
 	}
-	if (!loseBuffer_.loadFromFile(""))
+	if (!loseBuffer_.loadFromFile("data/sounds/Lose.wav"))
 	{
 		core::LogError("Couldn't load lose sound");
 	}

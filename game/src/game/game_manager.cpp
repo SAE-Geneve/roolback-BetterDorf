@@ -584,6 +584,16 @@ void ClientGameManager::WinGame(PlayerNumber winner)
     const auto& winnerBody = rollbackManager_.GetCurrentPhysicsManager().GetBody(GetEntityFromPlayerNumber(winner));
     SpawnEffect(EffectType::SKULL, loserBody.position, END_EFFECTS_LIFETIME);
     SpawnEffect(EffectType::TROPHY, winnerBody.position, END_EFFECTS_LIFETIME);
+    core::LogDebug("Winner declared on client");
+
+    if (winner == GetPlayerNumber())
+    {
+        soundPlayer_.PlayEffectSound(SoundEffect::WIN);
+    }
+    else
+    {
+        soundPlayer_.PlayEffectSound(SoundEffect::LOSE);
+    }
 
     state_ = state_ | FINISHED;
 }
