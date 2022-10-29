@@ -147,6 +147,12 @@ PlayerNumber GameManager::CheckWinner()
         }
     }
 
+    if (winningPlayer == 0)
+    {
+        // If both loses, default to a single winner
+        return 1;
+    }
+
     return winningPlayer == 1 ? winner : INVALID_PLAYER;
 }
 
