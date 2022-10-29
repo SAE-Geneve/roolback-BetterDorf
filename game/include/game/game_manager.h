@@ -9,6 +9,7 @@
 #include "game_globals.h"
 #include "rollback_manager.h"
 #include "animation_manager.h"
+#include "effects.h"
 #include "engine/entity.h"
 #include "graphics/graphics.h"
 #include "graphics/sprite.h"
@@ -31,7 +32,7 @@ public:
     virtual ~GameManager() = default;
     virtual void SpawnPlayer(PlayerNumber playerNumber, core::Vec2f position, core::Degree rotation);
     virtual void SpawnGloves(PlayerNumber playerNumber, core::Vec2f playerPos, core::Degree playerRot);
-    virtual core::Entity SpawnEffect(EffectType type, core::Vec2f pos);
+    virtual core::Entity SpawnEffect(EffectType type, core::Vec2f pos, float lifetime = EFFECTS_LIFETIME);
     void DestroyEffect(core::Entity entity);
     [[nodiscard]] core::Entity GetEntityFromPlayerNumber(PlayerNumber playerNumber) const;
     [[nodiscard]] std::array<core::Entity, 2> GetGlovesEntityFromPlayerNumber(PlayerNumber playerNumber) const;
@@ -86,7 +87,7 @@ public:
      */
     void SpawnPlayer(PlayerNumber playerNumber, core::Vec2f position, core::Degree rotation) override;
     void SpawnGloves(PlayerNumber playerNumber, core::Vec2f playerPos, core::Degree playerRot) override;
-    core::Entity SpawnEffect(EffectType type, core::Vec2f pos) override;
+    core::Entity SpawnEffect(EffectType type, core::Vec2f pos, float lifetime = EFFECTS_LIFETIME) override;
     void FixedUpdate();
     void SetPlayerInput(PlayerNumber playerNumber, PlayerInput playerInput, std::uint32_t inputFrame) override;
     void DrawImGui() override;
@@ -106,6 +107,7 @@ protected:
     PlayerNumber clientPlayer_ = INVALID_PLAYER;
     core::SpriteManager spriteManager_;
     AnimationManager animationManager_;
+    EffectManager effectManager_;
 
     float fixedTimer_ = 0.0f;
     unsigned long long startingTime_ = 0;

@@ -71,16 +71,9 @@ void GameManager::SpawnGloves(PlayerNumber playerNumber, core::Vec2f playerPos, 
 
 }
 
-core::Entity GameManager::SpawnEffect(EffectType type, const core::Vec2f pos)
+core::Entity GameManager::SpawnEffect(EffectType type, const core::Vec2f pos, float lifetime)
 {
-	const core::Entity entity = entityManager_.CreateEntity();
-
-    transformManager_.AddComponent(entity);
-    transformManager_.SetPosition(entity, pos);
-
-    rollbackManager_.SpawnEffect(entity, type, pos);
-
-    return entity;
+    return core::INVALID_ENTITY;
 }
 
 void GameManager::DestroyEffect(const core::Entity entity)
@@ -165,7 +158,8 @@ ClientGameManager::ClientGameManager(PacketSenderInterface& packetSenderInterfac
     GameManager(),
     packetSenderInterface_(packetSenderInterface),
     spriteManager_(entityManager_, transformManager_),
-    animationManager_(entityManager_, spriteManager_)
+    animationManager_(entityManager_, spriteManager_),
+    effectManager_(entityManager_, *this)
 {
 }
 
@@ -203,6 +197,7 @@ void ClientGameManager::Update(const sf::Time dt)
     if (state_ & STARTED)
     {
         animationManager_.Update(dt);
+        effectManager_.Update(dt);
 
         if (state_ & FINISHED)
         {
@@ -419,9 +414,20 @@ void ClientGameManager::SpawnGloves(PlayerNumber playerNumber, core::Vec2f playe
     }
 }
 
-core::Entity ClientGameManager::SpawnEffect(const EffectType type, const core::Vec2f pos)
+core::Entity ClientGameManager::SpawnEffect(const EffectType type, const core::Vec2f pos, float lifetime)
 {
-	const auto entity = GameManager::SpawnEffect(type, pos);
+    const core::Entity entity = entityManager_.CreateEntity();
+
+    rollbackManager_.SpawnEffect(entity, pos);
+
+    transformManager_.AddComponent(entity);
+    transformManager_.SetPosition(entity, pos);
+
+    effectManager_.AddComponent(entity);
+    auto effect = effectManager_.GetComponent(entity);
+    effect.lifetime = lifetime;
+    effect.type = type;
+    effectManager_.SetComponent(entity, effect);
 
 	switch (type)
 	{
@@ -439,6 +445,7 @@ core::Entity ClientGameManager::SpawnEffect(const EffectType type, const core::V
 	case EffectType::TROPHY:
 		{
         animationManager_.SetupComponent(entity, animationManager_.trophy_);
+        break;
 		}
     default: break;  // NOLINT(clang-diagnostic-covered-switch-default)
 	}
@@ -475,6 +482,7 @@ void ClientGameManager::FixedUpdate()
             return;
         }
     }
+    
     if (state_ & FINISHED)
     {
         return;
@@ -571,8 +579,8 @@ void ClientGameManager::WinGame(PlayerNumber winner)
     const PlayerNumber loser = (winner + 1) % 2;
     const auto& loserBody = rollbackManager_.GetCurrentPhysicsManager().GetBody(GetEntityFromPlayerNumber(loser));
     const auto& winnerBody = rollbackManager_.GetCurrentPhysicsManager().GetBody(GetEntityFromPlayerNumber(winner));
-    SpawnEffect(EffectType::SKULL, loserBody.position);
-    SpawnEffect(EffectType::TROPHY, winnerBody.position);
+    SpawnEffect(EffectType::SKULL, loserBody.position, END_EFFECTS_LIFETIME);
+    SpawnEffect(EffectType::TROPHY, winnerBody.position, END_EFFECTS_LIFETIME);
 
     state_ = state_ | FINISHED;
 }

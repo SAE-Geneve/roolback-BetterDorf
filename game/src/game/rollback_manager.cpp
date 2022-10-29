@@ -16,10 +16,9 @@ RollbackManager::RollbackManager(GameManager& gameManager, core::EntityManager& 
 	currentTransformManager_(entityManager),
 	currentPhysicsManager_(entityManager),
 	currentPlayerManager_(entityManager, currentPhysicsManager_, gameManager_, currentGloveManager_), currentGloveManager_(entityManager, currentPhysicsManager_, gameManager),
-	currentEffectManager_(entityManager, gameManager_),
 	lastValidatedPhysicsManager_(entityManager),
 	lastValidatedPlayerManager_(entityManager, lastValidatedPhysicsManager_, gameManager_, lastValidatedGloveManager_),
-	lastValidatedGloveManager_(entityManager, lastValidatedPhysicsManager_, gameManager), lastValidatedEffectManager_(entityManager, gameManager_)
+	lastValidatedGloveManager_(entityManager, lastValidatedPhysicsManager_, gameManager)
 {
 	for (auto& input : inputs_)
 	{
@@ -57,7 +56,6 @@ void RollbackManager::SimulateToCurrentFrame()
 	currentPhysicsManager_.CopyAllComponents(lastValidatedPhysicsManager_);
 	currentPlayerManager_.CopyAllComponents(lastValidatedPlayerManager_.GetAllComponents());
 	currentGloveManager_.CopyAllComponents(lastValidatedGloveManager_.GetAllComponents());
-	currentEffectManager_.CopyAllComponents(lastValidatedEffectManager_.GetAllComponents());
 
 	for (Frame frame = lastValidateFrame + 1; frame <= currentFrame; frame++)
 	{
@@ -80,7 +78,6 @@ void RollbackManager::SimulateToCurrentFrame()
 		currentPlayerManager_.FixedUpdate(sf::seconds(FIXED_PERIOD));
 		currentGloveManager_.FixedUpdate(sf::seconds(FIXED_PERIOD));
 		currentPhysicsManager_.FixedUpdate(sf::seconds(FIXED_PERIOD));
-		currentEffectManager_.FixedUpdate(sf::seconds(FIXED_PERIOD));
 	}
 	//Copy the physics states to the transforms
 	for (core::Entity entity = 0; entity < entityManager_.GetEntitiesSize(); entity++)
@@ -182,7 +179,6 @@ void RollbackManager::ValidateFrame(Frame newValidateFrame)
 	currentPhysicsManager_.CopyAllComponents(lastValidatedPhysicsManager_);
 	currentPlayerManager_.CopyAllComponents(lastValidatedPlayerManager_.GetAllComponents());
 	currentGloveManager_.CopyAllComponents(lastValidatedGloveManager_.GetAllComponents());
-	currentEffectManager_.CopyAllComponents(lastValidatedEffectManager_.GetAllComponents());
 
 	//We simulate the frames until the new validated frame
 	for (Frame frame = lastValidatedFrame_ + 1; frame <= newValidateFrame; frame++)
@@ -201,7 +197,6 @@ void RollbackManager::ValidateFrame(Frame newValidateFrame)
 		currentPlayerManager_.FixedUpdate(sf::seconds(FIXED_PERIOD));
 		currentGloveManager_.FixedUpdate(sf::seconds(FIXED_PERIOD));
 		currentPhysicsManager_.FixedUpdate(sf::seconds(FIXED_PERIOD));
-		currentEffectManager_.FixedUpdate(sf::seconds(FIXED_PERIOD));
 	}
 	//Definitely remove DESTROY entities
 	for (core::Entity entity = 0; entity < entityManager_.GetEntitiesSize(); entity++)
@@ -215,7 +210,6 @@ void RollbackManager::ValidateFrame(Frame newValidateFrame)
 	lastValidatedPlayerManager_.CopyAllComponents(currentPlayerManager_.GetAllComponents());
 	lastValidatedGloveManager_.CopyAllComponents(currentGloveManager_.GetAllComponents());
 	lastValidatedPhysicsManager_.CopyAllComponents(currentPhysicsManager_);
-	lastValidatedEffectManager_.CopyAllComponents(currentEffectManager_.GetAllComponents());
 	lastValidatedFrame_ = newValidateFrame;
 	createdEntities_.clear();
 }
@@ -360,15 +354,9 @@ void RollbackManager::SpawnGlove(core::Entity playerEntity, core::Entity entity,
 	currentTransformManager_.SetRotation(entity, gloveBody.rotation);
 }
 
-void RollbackManager::SpawnEffect(core::Entity entity, EffectType type, core::Vec2f position, float lifetime)
+void RollbackManager::SpawnEffect(core::Entity entity, core::Vec2f position)
 {
 	createdEntities_.push_back({ entity, testedFrame_ });
-
-	currentEffectManager_.AddComponent(entity);
- 	auto effect = currentEffectManager_.GetComponent(entity);
-	effect.type = type;
-	effect.lifetime = lifetime;
-	currentEffectManager_.SetComponent(entity, effect);
 
 	currentTransformManager_.AddComponent(entity);
 	currentTransformManager_.SetPosition(entity, position);

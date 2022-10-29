@@ -25,7 +25,7 @@ class EffectManager : public core::ComponentManager<Effect, static_cast<core::En
 {
 public:
 	explicit EffectManager(core::EntityManager&, GameManager&);
-	void FixedUpdate(sf::Time dt);
+	void Update(sf::Time dt);
 private:
 	GameManager& gameManager_;
 };

@@ -36,6 +36,7 @@ using Frame = std::uint32_t;
 constexpr float ANIMATION_PERIOD = 0.05f;
 constexpr int ANIMATION_PIXEL_SIZE = 32;
 constexpr float EFFECTS_LIFETIME = 1.0f;
+constexpr float END_EFFECTS_LIFETIME = 150.0f;
 
 constexpr std::uint32_t MAX_PLAYER_NMB = 2;
 constexpr float PLAYER_SPEED = 10.5f;

@@ -8,7 +8,7 @@ game::EffectManager::EffectManager(core::EntityManager& entityManager, GameManag
 {
 }
 
-void game::EffectManager::FixedUpdate(sf::Time dt)
+void game::EffectManager::Update(sf::Time dt)
 {
 #ifdef TRACY_ENABLE
 	ZoneScoped;
