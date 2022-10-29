@@ -145,6 +145,9 @@ PlayerNumber GameManager::CheckWinner()
         {
             winningPlayer++;
             winner = player.playerNumber;
+
+            // Spawn effect
+            SpawnEffect(EffectType::SKULL, playerBody.position);
         }
     }
 
@@ -423,7 +426,10 @@ core::Entity ClientGameManager::SpawnEffect(const EffectType type, const core::V
 	case EffectType::HIT_BIG:
         animationManager_.SetupComponent(entity, animationManager_.bigHitEffect_);
         break;
-    default: break;
+	case EffectType::SKULL:
+        animationManager_.SetupComponent(entity, animationManager_.growingSkull_);
+        break;
+    default: break;  // NOLINT(clang-diagnostic-covered-switch-default)
 	}
 
     return entity;

@@ -15,7 +15,7 @@ PlayerCharacterManager::PlayerCharacterManager(core::EntityManager& entityManage
 {
 }
 
-void PlayerCharacterManager::FixedUpdate(sf::Time dt)
+void PlayerCharacterManager::FixedUpdate(const sf::Time dt)
 {
 #ifdef TRACY_ENABLE
     ZoneScoped;

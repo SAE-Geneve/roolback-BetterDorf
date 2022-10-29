@@ -44,6 +44,10 @@ void AnimationManager::Init()
 	{
 		core::LogError("Failed to load bigHitEffect texture");
 	}
+	if (!growingSkull_.animTexture.loadFromFile("data/sprites/Skull.png"))
+	{
+		core::LogError("Failed to load skull texture");
+	}
 }
 
 void AnimationManager::Update(const sf::Time dt)

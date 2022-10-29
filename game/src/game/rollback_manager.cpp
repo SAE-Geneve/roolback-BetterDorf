@@ -434,9 +434,6 @@ void RollbackManager::ManagePGCollision(auto playerEntity, auto gloveEntity)
 	player.invincibilityTime = PLAYER_INVINCIBILITY_PERIOD;
 	player.knockBackTime = PLAYER_KNOCKBACK_TIME;
 
-	// Change glove properties
-	currentGloveManager_.StartReturn(gloveEntity);
-
 	const float knockbackMod = PLAYER_BASE_KNOCKBACK_MOD + PLAYER_KNOCKBACK_SCALING * player.damagePercent / 100.0f;
 	player.damagePercent += GLOVE_DAMAGE;
 
@@ -445,6 +442,9 @@ void RollbackManager::ManagePGCollision(auto playerEntity, auto gloveEntity)
 	auto& gloveBody = currentPhysicsManager_.GetBody(gloveEntity);
 	auto& playerBody = currentPhysicsManager_.GetBody(playerEntity);
 	HandlePunchCollision(gloveBody, gloveEntity, playerBody, playerEntity, knockbackMod);
+
+	// Change glove properties
+	currentGloveManager_.StartReturn(gloveEntity);
 
 	gameManager_.SpawnEffect(EffectType::HIT_BIG, (gloveBody.position + playerBody.position) / 2.0f);
 }
@@ -460,23 +460,23 @@ void RollbackManager::ManageGGCollision(auto firstGloveEntity, auto secondGloveE
 	const bool bothPunch = glove1.isPunching && glove2.isPunching && glove1.hasLaunched && glove2.hasLaunched;
 	if (glove1.isPunching)
 	{
-		currentGloveManager_.StartReturn(firstGloveEntity);
-
-		if (!bothPunch)
+		if (!bothPunch && glove1.hasLaunched)
 		{
 			HandlePunchCollision(glove1Body, firstGloveEntity,
 				glove2Body, secondGloveEntity, GLOVE_KNOCKBACK_MOD);
 		}
+
+		currentGloveManager_.StartReturn(firstGloveEntity);
 	}
 	if (glove2.isPunching)
 	{
-		currentGloveManager_.StartReturn(secondGloveEntity);
-
-		if (!bothPunch)
+		if (!bothPunch && glove2.hasLaunched)
 		{
 			HandlePunchCollision(glove2Body, secondGloveEntity,
 				glove1Body, firstGloveEntity, GLOVE_KNOCKBACK_MOD);
 		}
+
+		currentGloveManager_.StartReturn(secondGloveEntity);
 	}
 
 	if (bothPunch)

@@ -8,7 +8,8 @@ namespace game
 enum class EffectType
 {
 	HIT,
-	HIT_BIG
+	HIT_BIG,
+	SKULL
 };
 
 struct Effect
