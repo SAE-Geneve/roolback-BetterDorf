@@ -202,6 +202,13 @@ void ClientGameManager::Update(const sf::Time dt)
 #endif
     if (state_ & STARTED)
     {
+        animationManager_.Update(dt);
+
+        if (state_ & FINISHED)
+        {
+	        return;
+        }
+
         rollbackManager_.SimulateToCurrentFrame();
         //Copy rollback transform position to our own
         for (core::Entity entity = 0; entity < entityManager_.GetEntitiesSize(); entity++)
@@ -244,8 +251,6 @@ void ClientGameManager::Update(const sf::Time dt)
             }
         }
     }
-
-    animationManager_.Update(dt);
 
     fixedTimer_ += dt.asSeconds();
     while (fixedTimer_ > FIXED_PERIOD)
@@ -493,7 +498,6 @@ void ClientGameManager::FixedUpdate()
         playerInputPacket->inputs[i] = inputs[i];
     }
     packetSenderInterface_.SendUnreliablePacket(std::move(playerInputPacket));
-
 
     currentFrame_++;
     rollbackManager_.StartNewFrame(currentFrame_);

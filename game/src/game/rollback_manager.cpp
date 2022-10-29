@@ -19,7 +19,7 @@ RollbackManager::RollbackManager(GameManager& gameManager, core::EntityManager& 
 	currentEffectManager_(entityManager, gameManager_),
 	lastValidatedPhysicsManager_(entityManager),
 	lastValidatedPlayerManager_(entityManager, lastValidatedPhysicsManager_, gameManager_, lastValidatedGloveManager_),
-	lastValidatedGloveManager_(entityManager, lastValidatedPhysicsManager_, gameManager)
+	lastValidatedGloveManager_(entityManager, lastValidatedPhysicsManager_, gameManager), lastValidatedEffectManager_(entityManager, gameManager_)
 {
 	for (auto& input : inputs_)
 	{
@@ -57,6 +57,7 @@ void RollbackManager::SimulateToCurrentFrame()
 	currentPhysicsManager_.CopyAllComponents(lastValidatedPhysicsManager_);
 	currentPlayerManager_.CopyAllComponents(lastValidatedPlayerManager_.GetAllComponents());
 	currentGloveManager_.CopyAllComponents(lastValidatedGloveManager_.GetAllComponents());
+	currentEffectManager_.CopyAllComponents(lastValidatedEffectManager_.GetAllComponents());
 
 	for (Frame frame = lastValidateFrame + 1; frame <= currentFrame; frame++)
 	{
@@ -181,6 +182,7 @@ void RollbackManager::ValidateFrame(Frame newValidateFrame)
 	currentPhysicsManager_.CopyAllComponents(lastValidatedPhysicsManager_);
 	currentPlayerManager_.CopyAllComponents(lastValidatedPlayerManager_.GetAllComponents());
 	currentGloveManager_.CopyAllComponents(lastValidatedGloveManager_.GetAllComponents());
+	currentEffectManager_.CopyAllComponents(lastValidatedEffectManager_.GetAllComponents());
 
 	//We simulate the frames until the new validated frame
 	for (Frame frame = lastValidatedFrame_ + 1; frame <= newValidateFrame; frame++)
@@ -199,6 +201,7 @@ void RollbackManager::ValidateFrame(Frame newValidateFrame)
 		currentPlayerManager_.FixedUpdate(sf::seconds(FIXED_PERIOD));
 		currentGloveManager_.FixedUpdate(sf::seconds(FIXED_PERIOD));
 		currentPhysicsManager_.FixedUpdate(sf::seconds(FIXED_PERIOD));
+		currentEffectManager_.FixedUpdate(sf::seconds(FIXED_PERIOD));
 	}
 	//Definitely remove DESTROY entities
 	for (core::Entity entity = 0; entity < entityManager_.GetEntitiesSize(); entity++)
@@ -212,6 +215,7 @@ void RollbackManager::ValidateFrame(Frame newValidateFrame)
 	lastValidatedPlayerManager_.CopyAllComponents(currentPlayerManager_.GetAllComponents());
 	lastValidatedGloveManager_.CopyAllComponents(currentGloveManager_.GetAllComponents());
 	lastValidatedPhysicsManager_.CopyAllComponents(currentPhysicsManager_);
+	lastValidatedEffectManager_.CopyAllComponents(currentEffectManager_.GetAllComponents());
 	lastValidatedFrame_ = newValidateFrame;
 	createdEntities_.clear();
 }

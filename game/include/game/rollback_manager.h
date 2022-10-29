@@ -131,6 +131,7 @@ private:
     PhysicsManager lastValidatedPhysicsManager_;
     PlayerCharacterManager lastValidatedPlayerManager_;
     GloveManager lastValidatedGloveManager_;
+    EffectManager lastValidatedEffectManager_;
     /**
      * \brief lastValidatedFrame_ is the last validated frame from the server side.
      */
