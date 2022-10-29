@@ -422,7 +422,7 @@ void RollbackManager::DestroyEntity(core::Entity entity)
 void RollbackManager::ManagePGCollision(auto playerEntity, auto gloveEntity)
 {
 	PlayerCharacter player = currentPlayerManager_.GetComponent(playerEntity);
-	Glove glove = currentGloveManager_.GetComponent(gloveEntity);
+	const Glove glove = currentGloveManager_.GetComponent(gloveEntity);
 
 	// Players can't hit themselves
 	if (player.playerNumber == glove.playerNumber || player.invincibilityTime > 0.0f || !glove.hasLaunched)
@@ -435,19 +435,12 @@ void RollbackManager::ManagePGCollision(auto playerEntity, auto gloveEntity)
 	player.knockBackTime = PLAYER_KNOCKBACK_TIME;
 
 	// Change glove properties
-	glove.isRecovering = true;
-	glove.recoveryTime = GLOVE_RECOVERY_TIME;
-
-	Circle col = currentPhysicsManager_.Getcol(gloveEntity);
-	col.isTrigger = false;
-	col.enabled = false;
-	currentPhysicsManager_.SetCol(gloveEntity, col);
+	currentGloveManager_.StartReturn(gloveEntity);
 
 	const float knockbackMod = PLAYER_BASE_KNOCKBACK_MOD + PLAYER_KNOCKBACK_SCALING * player.damagePercent / 100.0f;
 	player.damagePercent += GLOVE_DAMAGE;
 
 	currentPlayerManager_.SetComponent(playerEntity, player);
-	currentGloveManager_.SetComponent(gloveEntity, glove);
 
 	auto& gloveBody = currentPhysicsManager_.GetBody(gloveEntity);
 	auto& playerBody = currentPhysicsManager_.GetBody(playerEntity);
@@ -458,8 +451,8 @@ void RollbackManager::ManagePGCollision(auto playerEntity, auto gloveEntity)
 
 void RollbackManager::ManageGGCollision(auto firstGloveEntity, auto secondGloveEntity)
 {
-	Glove glove1 = currentGloveManager_.GetComponent(firstGloveEntity);
-	Glove glove2 = currentGloveManager_.GetComponent(secondGloveEntity);
+	const Glove glove1 = currentGloveManager_.GetComponent(firstGloveEntity);
+	const Glove glove2 = currentGloveManager_.GetComponent(secondGloveEntity);
 
 	Body glove1Body = currentPhysicsManager_.GetBody(firstGloveEntity);
 	Body glove2Body = currentPhysicsManager_.GetBody(secondGloveEntity);
@@ -495,9 +488,6 @@ void RollbackManager::ManageGGCollision(auto firstGloveEntity, auto secondGloveE
 		currentPhysicsManager_.SetBody(firstGloveEntity, glove1Body);
 		currentPhysicsManager_.SetBody(secondGloveEntity, glove2Body);
 	}
-
-	currentGloveManager_.SetComponent(firstGloveEntity, glove1);
-	currentGloveManager_.SetComponent(secondGloveEntity, glove2);
 
 	gameManager_.SpawnEffect(EffectType::HIT, (glove1Body.position + glove2Body.position) / 2.0f);
 }

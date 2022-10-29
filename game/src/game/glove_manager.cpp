@@ -43,8 +43,9 @@ void game::GloveManager::FixedUpdate(const sf::Time dt)
 				{
 					if (glove.recoveryTime > 0.0f)
 					{
-						gloveBody.position = core::Vec2f::Lerp(glove.returningFromPos, goalPos,
-							(GLOVE_RECOVERY_TIME - glove.recoveryTime) / GLOVE_RECOVERY_TIME);
+						float ratio = std::clamp((GLOVE_RECOVERY_TIME - glove.recoveryTime) / GLOVE_RECOVERY_TIME,
+							0.0f, 1.0f);
+						gloveBody.position = core::Vec2f::Lerp(glove.returningFromPos, goalPos, ratio);
 					}
 					else
 					{
