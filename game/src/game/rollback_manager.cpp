@@ -360,14 +360,14 @@ void RollbackManager::SpawnGlove(core::Entity playerEntity, core::Entity entity,
 	currentTransformManager_.SetRotation(entity, gloveBody.rotation);
 }
 
-void RollbackManager::SpawnEffect(core::Entity entity, EffectType type, core::Vec2f position)
+void RollbackManager::SpawnEffect(core::Entity entity, EffectType type, core::Vec2f position, float lifetime)
 {
 	createdEntities_.push_back({ entity, testedFrame_ });
 
 	currentEffectManager_.AddComponent(entity);
  	auto effect = currentEffectManager_.GetComponent(entity);
 	effect.type = type;
-	effect.lifetime = EFFECTS_LIFETIME;
+	effect.lifetime = lifetime;
 	currentEffectManager_.SetComponent(entity, effect);
 
 	currentTransformManager_.AddComponent(entity);

@@ -80,7 +80,7 @@ void AnimationManager::Update(const sf::Time dt)
 				}
 				else
 				{
-					data.textureIdx = animTexture.getSize().x / ANIMATION_PIXEL_SIZE - ANIMATION_PIXEL_SIZE;
+					data.textureIdx = animTexture.getSize().x / ANIMATION_PIXEL_SIZE - 1;
 				}
 			}
 			data.time = 0.0f;

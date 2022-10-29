@@ -139,15 +139,11 @@ PlayerNumber GameManager::CheckWinner()
         if (std::abs(playerBody.position.x) > BATTLE_STAGE_WIDTH / 2.0f ||
             std::abs(playerBody.position.y) > BATTLE_STAGE_HEIGHT / 2.0f)
         {
-            
         }
         else
         {
             winningPlayer++;
             winner = player.playerNumber;
-
-            // Spawn effect
-            SpawnEffect(EffectType::SKULL, playerBody.position);
         }
     }
 
@@ -416,8 +412,6 @@ core::Entity ClientGameManager::SpawnEffect(const EffectType type, const core::V
 {
 	const auto entity = GameManager::SpawnEffect(type, pos);
 
-    rollbackManager_.SpawnEffect(entity, type, pos);
-
 	switch (type)
 	{
 	case EffectType::HIT:
@@ -427,8 +421,10 @@ core::Entity ClientGameManager::SpawnEffect(const EffectType type, const core::V
         animationManager_.SetupComponent(entity, animationManager_.bigHitEffect_);
         break;
 	case EffectType::SKULL:
+		{
         animationManager_.SetupComponent(entity, animationManager_.growingSkull_);
         break;
+		}
     default: break;  // NOLINT(clang-diagnostic-covered-switch-default)
 	}
 
@@ -554,6 +550,11 @@ void ClientGameManager::ConfirmValidateFrame(Frame newValidateFrame,
 void ClientGameManager::WinGame(PlayerNumber winner)
 {
     GameManager::WinGame(winner);
+
+    const PlayerNumber loser = (winner + 1) % 2;
+    const auto& body = rollbackManager_.GetCurrentPhysicsManager().GetBody(GetEntityFromPlayerNumber(loser));
+    SpawnEffect(EffectType::SKULL, body.position);
+
     state_ = state_ | FINISHED;
 }
 

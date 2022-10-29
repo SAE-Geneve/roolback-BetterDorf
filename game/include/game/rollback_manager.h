@@ -67,6 +67,7 @@ public:
     [[nodiscard]] const PlayerCharacterManager& GetPlayerCharacterManager() const { return currentPlayerManager_; }
     [[nodiscard]] const GloveManager& GetGloveManager() const { return currentGloveManager_; }
     [[nodiscard]] PhysicsManager& GetCurrentPhysicsManager() { return currentPhysicsManager_; }
+    [[nodiscard]] EffectManager& GetCurrentEffectManager() { return currentEffectManager_; }
     void SpawnPlayer(PlayerNumber playerNumber, core::Entity entity, core::Vec2f position, core::Degree rotation);
     /**
      * \brief Set the glove's position relative to its player and create components for it
@@ -78,7 +79,7 @@ public:
      */
     void SpawnGlove(core::Entity playerEntity, core::Entity entity, core::Vec2f position, core::Degree rotation, float sign);
 
-    void SpawnEffect(core::Entity, EffectType type, core::Vec2f position);
+    void SpawnEffect(core::Entity, EffectType type, core::Vec2f position, float lifetime = EFFECTS_LIFETIME);
     /**
      * \brief DestroyEntity is a method that does not destroy the entity definitely, but puts the DESTROY flag on.
      * An entity is truly destroyed when the destroy frame is validated.
