@@ -4,7 +4,6 @@
 
 #include "game_globals.h"
 
-
 namespace core
 {
 class SpriteManager;
@@ -47,7 +46,6 @@ public:
     void Init();
     void Update(sf::Time dt);
 
-    // TODO make this private and pass animations with enums
     Animation hitEffect_;
     Animation bigHitEffect_;
     Animation growingSkull_;
