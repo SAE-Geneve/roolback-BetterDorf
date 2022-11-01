@@ -24,13 +24,13 @@ void game::Background::Init(sf::Vector2u windowSize)
     // Make the spike tiles
     const sf::Vector2u tileSize = tilesTxts_[0].getSize();
 
-    for (int x = 0 - SIDE_BUFFER; x < static_cast<int>(windowSize.x / tileSize.x) + SIDE_BUFFER; x++)
+    for (float x = 0 - SIDE_BUFFER; x < static_cast<int>(windowSize.x / tileSize.x) + SIDE_BUFFER; x++)
     {
-        for (int y = 0 - SIDE_BUFFER; y < static_cast<int>(windowSize.y / tileSize.y) + SIDE_BUFFER; y++)
+        for (float y = 0 - SIDE_BUFFER; y < static_cast<int>(windowSize.y / tileSize.y) + SIDE_BUFFER; y++)
         {
             sf::Sprite tile;
             tile.setTexture(tilesTxts_[std::rand() % tilesNum_]);
-            tile.setPosition(x * tileSize.x, y * tileSize.y);
+            tile.setPosition(static_cast<float>(x) * static_cast<float>(tileSize.x), static_cast<float>(y) * static_cast<float>(tileSize.y));
 
             tiles_.emplace_back(tile);
         }
